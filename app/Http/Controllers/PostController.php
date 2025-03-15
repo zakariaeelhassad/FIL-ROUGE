@@ -51,8 +51,29 @@ class PostController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $validated = $request->validate([
+            'content' => ['required', 'string'],
+            'image' => ['required', 'string']
+        ]);
+
+        $post = Post::find($id);
+
+        if (!$post) {
+            return response()->json([
+                'message' => 'Post introuvable.'
+            ], 404);
+        }
+
+        $post->content = $validated['content'];
+        $post->image = $validated['image'];
+        $post->save();
+
+        return response()->json([
+            'message' => 'Post modifié avec succès.',
+            'post' => $post
+        ], 200);
     }
+
 
     /**
      * Remove the specified resource from storage.
