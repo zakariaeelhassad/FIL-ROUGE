@@ -12,4 +12,9 @@ class Post extends Model
     protected $table = 'posts';
 
     protected $fillable = ['content' , 'image','user_id'];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
