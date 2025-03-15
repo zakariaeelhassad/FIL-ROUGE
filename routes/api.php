@@ -23,6 +23,7 @@ Route::post('/register' , [AuthController::class , 'register']);
 Route::group(['middleware'=>['auth:sanctum']], function(){
     Route::get('/my-posts', [PostController::class, 'myPosts']);
     Route::post('/post', [PostController::class , 'store']);
-    Route::delete('/posts/{id}/delete', [PostController::class, 'destroy']);
-    Route::put('/posts/{id}/update', [PostController::class, 'update']);
+    Route::delete('/posts/{postId}/delete', [PostController::class, 'destroy']);
+    Route::put('/posts/{postId}/update', [PostController::class, 'update']);
+    Route::post('/posts/{postId}/like', [PostController::class, 'likePost']);
 });
