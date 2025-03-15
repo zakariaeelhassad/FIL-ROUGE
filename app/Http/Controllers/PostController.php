@@ -10,9 +10,16 @@ class PostController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function myPosts()
     {
-        //
+        $posts = Post::where('user_id', auth()->id())
+                 ->with('user:id,username,full_name')
+                 ->get();
+
+        return response()->json([
+            'message' => 'Liste des posts récupérée avec succès.',
+            'posts' => $posts
+        ], 200);
     }
 
     /**
