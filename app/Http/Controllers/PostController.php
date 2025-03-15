@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Like;
 use App\Models\Post;
 use Illuminate\Http\Request;
 
@@ -100,5 +101,34 @@ class PostController extends Controller
         return response()->json([
             'message' => 'Post supprimé avec succès.'
         ], 200);
+    }
+    
+
+    public function likePost(Request $request, $postId)
+    {
+        $user = auth()->user();
+
+        $post = Post::findOrFail($postId);
+
+        $like = Like::where('user_id', $user->id)->where('post_id', $postId)->first();
+
+        if ($like) {
+            $like->delete();
+            return $request->json([
+                'status' => 'success',
+                'message' => 'Like supprimé',
+                'liked' => false
+            ], 200);
+        } else {
+            Like::create([
+                'user_id' => $user->id,
+                'post_id' => $postId
+            ]);
+            return $request->json([
+                'status' => 'success',
+                'message' => 'Post liké',
+                'liked' => true
+            ], 201);
+        }
     }
 }
