@@ -59,6 +59,18 @@ class PostController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $post = Post::find($id);
+
+        if (!$post) {
+            return response()->json([
+                'message' => 'Post introuvable.'
+            ], 404);
+        }
+    
+        $post->delete();
+    
+        return response()->json([
+            'message' => 'Post supprimé avec succès.'
+        ], 200);
     }
 }
