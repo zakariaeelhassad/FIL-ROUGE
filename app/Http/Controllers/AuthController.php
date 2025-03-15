@@ -20,28 +20,32 @@ class AuthController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function register(Request $request)
     {
-        $attributes = request()->validate([
+        $attributes = $request->validate([
             'full_name' => ['required', 'string', 'max:255'],
             'username' => ['required', 'string', 'max:255', 'unique:users'],
             'email' => ['required', 'email', 'unique:users'],
-            'password' => ['required', 'min:8', 'confirmed'], 
+            'password' => ['required', 'min:8', 'confirmed'],
+            'role' => ['required', 'in:joueur,manager,club_admin,admin'],
         ]);
 
+        $attributes['full_name'] = $attributes['full_name'] ?? 'Nom non fourni';
+
+        $attributes['role'] = $attributes['role'] ?? 'joueur';
         $attributes['password'] = Hash::make($attributes['password']);
 
         $user = User::create($attributes);
         $token = $user->createToken('apptoken')->plainTextToken;
-        Auth::login($user);
 
-        // return redirect(('/login'))->with('success', 'Compte créé avec succès!');
+        Auth::login($user);
 
         return response()->json([
             'message' => 'Utilisateur créé avec succès',
             'token'   => $token
         ]);
     }
+
 
     /**
      * Display the specified resource.
