@@ -8,6 +8,12 @@ use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
+
+    public function index()
+    {
+        $posts = Post::with('user', 'comments', 'likes')->get(); 
+        return response()->json($posts);
+    }
     /**
      * Display a listing of the resource.
      */

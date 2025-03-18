@@ -26,4 +26,13 @@ class CommentController extends Controller
         ], 201);
     }
 
+
+    public function destroy($id)
+    {
+        $comment = Comment::findOrFail($id);
+        $comment->delete();
+
+        return response()->json(['message' => 'Commentaire supprimé avec succès']);
+    }
+
 }
