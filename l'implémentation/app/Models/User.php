@@ -53,4 +53,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(Like::class);
     }
+
+    public function joueurProfile()
+    {
+        return $this->hasOne(JoueurProfile::class);
+    }
+
+    public function clubAdminProfile()
+    {
+        return $this->hasOne(ClubAdminProfile::class);
+    }
 }

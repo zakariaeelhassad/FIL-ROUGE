@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CerficationController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\ExperienceController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\PostController;
 use Illuminate\Http\Request;
@@ -31,4 +33,16 @@ Route::group(['middleware'=>['auth:sanctum']], function(){
     Route::delete('comments/{id}', [CommentController::class, 'destroy']);
     Route::post('likes/{type}/{id}', [LikeController::class, 'store']);
     Route::delete('likes/{type}/{id}', [LikeController::class, 'destroy']); 
+});
+
+Route::group(['middleware'=>['auth:sanctum']], function(){
+    Route::post('/cerfication', [CerficationController::class , 'store']);
+    Route::delete('/cerfication/{cerficationId}/delete', [CerficationController::class, 'destroy']);
+    Route::put('/cerfication/{cerficationId}/update', [CerficationController::class, 'update']);
+});
+
+Route::group(['middleware'=>['auth:sanctum']], function(){
+    Route::post('/experience', [ExperienceController::class , 'store']);
+    Route::delete('/experience/{experienceId}/delete', [ExperienceController::class, 'destroy']);
+    Route::put('/experience/{experienceId}/update', [ExperienceController::class, 'update']);
 });
