@@ -3,6 +3,9 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CommenterController;
 use App\Http\Controllers\LikeController;
+use App\Http\Controllers\ProfilController;
+use App\Http\Controllers\ProfilJourController;
+use App\Http\Controllers\ProfilManagerClubController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -29,4 +32,8 @@ Route::group(['middleware'=>['auth:sanctum']], function(){
         Route::post('comment/{post_id}' , [CommenterController::class , 'store']);
 
         Route::post('like/{type}/{id}', [LikeController::class , 'store']);
+
+
+    Route::get('/profile', [ProfilController::class, 'getAuthenticatedProfile']);
+
 });
