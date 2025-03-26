@@ -1,11 +1,8 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\CerficationController;
-use App\Http\Controllers\CommentController;
-use App\Http\Controllers\ExperienceController;
+use App\Http\Controllers\CommenterController;
 use App\Http\Controllers\LikeController;
-use App\Http\Controllers\PostController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -23,26 +20,13 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::post('/register' , [AuthController::class , 'register']);
-Route::group(['middleware'=>['auth:sanctum']], function(){
-    Route::get('/my-posts', [PostController::class, 'myPosts']);
-    Route::post('/posts', [PostController::class , 'store']);
-    Route::delete('/posts/{postId}/delete', [PostController::class, 'destroy']);
-    Route::put('/posts/{postId}/update', [PostController::class, 'update']);
-    Route::post('posts/{postId}/comments', [CommentController::class, 'store']);
-    Route::delete('comments/{id}', [CommentController::class, 'destroy']);
-    Route::post('likes/{type}/{id}', [LikeController::class, 'store']);
-    Route::delete('likes/{type}/{id}', [LikeController::class, 'destroy']); 
-});
 
+Route::apiResource('users', \App\Http\Controllers\UserController::class);
 Route::group(['middleware'=>['auth:sanctum']], function(){
-    Route::post('/cerfication', [CerficationController::class , 'store']);
-    Route::delete('/cerfication/{cerficationId}/delete', [CerficationController::class, 'destroy']);
-    Route::put('/cerfication/{cerficationId}/update', [CerficationController::class, 'update']);
-});
+    Route::apiResource('posts', \App\Http\Controllers\PostsController::class);
+    Route::apiResource('experiences', \App\Http\Controllers\ExperienceController::class);
+    Route::apiResource('comment', \App\Http\Controllers\CommenterController::class);
+        Route::post('comment/{post_id}' , [CommenterController::class , 'store']);
 
-Route::group(['middleware'=>['auth:sanctum']], function(){
-    Route::post('/experience', [ExperienceController::class , 'store']);
-    Route::delete('/experience/{experienceId}/delete', [ExperienceController::class, 'destroy']);
-    Route::put('/experience/{experienceId}/update', [ExperienceController::class, 'update']);
+        Route::post('like/{type}/{id}', [LikeController::class , 'store']);
 });
