@@ -63,4 +63,18 @@ class User extends Authenticatable
     {
         return $this->hasOne(ClubAdminProfile::class);
     }
+
+
+    // public function getJWTIdentifier()
+    // {
+    //   return $this->getKey();
+    // }
+
+    // public function getJWTCustomClaims()
+    // {
+    //   return [
+    //     'email'=>$this->email,
+    //     'name'=>$this->name
+    //   ];
+    // }
 }
