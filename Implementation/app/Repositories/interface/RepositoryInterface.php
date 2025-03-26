@@ -2,9 +2,8 @@
 
 namespace App\Repositories\interface;
 
-use App\Models\User;
 
-interface UserRepositoryInterface
+interface RepositoryInterface
 {
     public function all();
 
