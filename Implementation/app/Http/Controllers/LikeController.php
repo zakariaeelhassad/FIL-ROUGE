@@ -36,7 +36,10 @@ class LikeController extends Controller
             'user_id' => Auth::id(),
         ]);
 
-        return response()->json($like, 201);
+        return response()->json([
+            'status' => 'Like ajouté avec succès',
+            'like' => $like
+        ], 201);
     }
 
     /**
