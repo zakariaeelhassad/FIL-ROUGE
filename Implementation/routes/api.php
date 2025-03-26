@@ -33,7 +33,7 @@ Route::group(['middleware'=>['auth:sanctum']], function(){
 
         Route::post('like/{type}/{id}', [LikeController::class , 'store']);
 
-
+    Route::get('/profile/{id}', [ProfilController::class, 'show']);
     Route::get('/profile', [ProfilController::class, 'getAuthenticatedProfile']);
 
 });
