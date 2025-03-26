@@ -3,9 +3,9 @@
 namespace App\Repositories;
 
 use App\Models\User;
-use App\Repositories\interface\UserRepositoryInterface;
+use App\Repositories\interface\RepositoryInterface;
 
-class UserRepository implements UserRepositoryInterface
+class UserRepository implements RepositoryInterface
 {
     public function all()
     {
