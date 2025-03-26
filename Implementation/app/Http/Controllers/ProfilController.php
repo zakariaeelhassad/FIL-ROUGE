@@ -8,6 +8,56 @@ use Illuminate\Support\Facades\Auth;
 
 class ProfilController extends Controller
 {
+    public function show($id)
+    {
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User not found'
+            ], 404);
+        }
+
+        $posts = $user->posts;
+
+        if ($user->role === 'joueur') {
+            return response()->json([
+                'status' => 'success',
+                'data' => $user,
+                'posts' => $posts,
+            ], 200);
+
+        } elseif ($user->role === 'club_admin') {
+            $clubAdminProfile = $user->clubAdminProfile;
+
+            if ($clubAdminProfile) {
+                $profileData = [
+                    'description' => $clubAdminProfile->description,
+                    'ecile' => $clubAdminProfile->ecile,
+                    'tactique' => $clubAdminProfile->Tactique,
+                    'gestion' => $clubAdminProfile->Gestion,
+                ];
+            } else {
+                $profileData = null;
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'data' => [
+                    'user' => $user,
+                    'profile' => $profileData,
+                    'posts' => $posts,
+                ]
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Unauthorized role'
+            ], 403);
+        }
+    }
+
 
     public function getAuthenticatedProfile()
     {
