@@ -30,7 +30,7 @@ const PostCard = ({ post }) => {
             {/* Post Image */}
             <div className="w-full h-40 bg-gray-200 mb-4 rounded-lg overflow-hidden">
                 <img
-                    src={image || "https://placehold.co/400x200"} // Use placeholder if no image
+                    src={image || "https://placehold.co/400x200"}
                     alt="Post Media"
                     className="w-full h-full object-cover"
                 />
