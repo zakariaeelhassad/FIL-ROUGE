@@ -1,6 +1,6 @@
 import React from "react";
 import ProfileCard from "./profileCard";
-import PostCard from "./postCard";
+import PostsList from "./PostsList";
 
 function Home() {
     return (
@@ -12,8 +12,7 @@ function Home() {
 
             {/* PostCards */}
             <div className="space-y-6">
-                <PostCard />
-                <PostCard />
+                <PostsList />
             </div>
         </div>
     );
