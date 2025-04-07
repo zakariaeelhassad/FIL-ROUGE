@@ -1,39 +1,41 @@
 import React from "react";
 
-const PostCard = () => {
+const PostCard = ({ post }) => {
+    const { user = {}, content, image, created_at } = post; 
+
     return (
         <div className="w-[500px] bg-white rounded-3xl border border-blue-400 shadow-md p-6">
-            {/* Header */}
+            {/* Header: User Details */}
             <div className="flex items-center mb-4">
                 <img
-                    src="https://placehold.co/40x40"
+                    src={user.profile_image || "https://placehold.co/40x40"}
                     alt="Profile"
                     className="rounded-full w-10 h-10 object-cover mr-3"
                 />
                 <div>
-                    <h3 className="text-blue-500 font-bold">Cristiano Ronaldo</h3>
-                    <p className="text-gray-500 text-sm">Professional Soccer Player | Midfielder</p>
+                    <h3 className="text-blue-500 font-bold">{user.name || "Unknown User"}</h3>
+                    <p className="text-gray-500 text-sm">{user.bio || "No Bio Available"}</p>
+                    <div className="text-gray-400 text-xs mb-4">
+                        Posted on: {new Date(created_at).toLocaleString() || "Unknown Date"}
+                    </div>
                 </div>
             </div>
 
             {/* Post Content */}
             <div className="text-gray-800 text-sm mb-4">
-                <p>
-                    nefjhf rebfr fefblehfrbf bjrefjbe n jkerf rejbkfejrb jbrekjbfr jbrekjb jkbrkjbfe...
-                </p>
+                <p>{content}</p>
                 <span className="text-blue-500 italic cursor-pointer">voir plus</span>
             </div>
 
-            {/* Image */}
+            {/* Post Image */}
             <div className="w-full h-40 bg-gray-200 mb-4 rounded-lg overflow-hidden">
                 <img
-                    src="https://placehold.co/400x200"
-                    alt="Logo"
+                    src={image || "https://placehold.co/400x200"} // Use placeholder if no image
+                    alt="Post Media"
                     className="w-full h-full object-cover"
                 />
             </div>
 
-            {/* Footer Icons */}
             <div className="flex justify-between">
                 <button className="rounded-full border border-blue-300 p-2 w-20 flex justify-center hover:bg-blue-50">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -56,3 +58,4 @@ const PostCard = () => {
 };
 
 export default PostCard;
+
