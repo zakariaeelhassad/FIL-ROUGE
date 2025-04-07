@@ -28,33 +28,32 @@ class UserController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $data = $request->validate([
-           'full_name' => ['required', 'string', 'max:255'],
-            'username' => ['required', 'string', 'max:255', 'unique:users'],
-            'email' => ['required', 'email', 'unique:users'],
-            'password' => ['required', 'min:8', 'confirmed'],
-            'role' => ['required', 'in:joueur,manager,club_admin,admin'],
-        ]); 
+{
+    $data = $request->validate([
+        'full_name' => ['required', 'string', 'max:255'],
+        'username' => ['required', 'string', 'max:255', 'unique:users'],
+        'email' => ['required', 'email', 'unique:users'],
+        'password' => ['required', 'min:8', 'confirmed'],
+        'role' => ['required', 'in:joueur,manager,club_admin,admin'],
+    ]); 
 
+    try {
         $user = $this->userService->create($data);
-
         $token = $user->createToken($user->username);
         Auth::login($user);
-
-        if (!$user instanceof User) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Failed to create user'
-            ], 500);
-        }
 
         return response()->json([
             'status' => 'success',
             'data' => $user,
-            'token'   => $token
+            'token' => $token
         ], 201);
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Failed to create user: ' . $e->getMessage()
+        ], 500);
     }
+}
 
 
     public function show(int $id)
