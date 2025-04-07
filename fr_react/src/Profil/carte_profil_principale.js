@@ -1,7 +1,7 @@
 import React from 'react';
 import '../App.css';
-import SocialMedia from "./socialMedia";
-import PerformanceStats from "./performanceStats";
+import SocialMedia from "./social_media";
+import PerformanceStats from "./performance_stats";
 
 const Carte_profil = () => {
     return (

@@ -1,7 +1,5 @@
 import { useState } from "react";
 import Carte_profil from "./carte_profil_principale";
-import SocialMedia from "./socialMedia";
-import PerformanceStats from "./performanceStats";
 import Navbar from "./attribu_profil_club_admin/navbar";
 import DescriptionSection from "./attribu_profil_club_admin/description";
 import ActiviteSection from "./activite";
@@ -10,6 +8,8 @@ import GestionSection from "./attribu_profil_club_admin/gestion";
 import TitreSection from "./attribu_profil_club_admin/titre";
 import EcoleSection from "./attribu_profil_club_admin/ecole";
 import CreatePostButton from "../les_model/createPostButton";
+import SocialMedia from "./social_media";
+import PerformanceStats from "./performance_stats";
 
 function Profil_club_manager() {
     const [activeSection, setActiveSection] = useState("description");
