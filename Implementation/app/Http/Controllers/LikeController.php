@@ -32,14 +32,15 @@ class LikeController extends Controller
             $likeable = Comment::findOrFail($id);
         }
 
-        $like = $likeable->likes()->create([
-            'user_id' => Auth::id(),
-        ]);
+        $existingLike = $likeable->likes()->where('user_id', Auth::id())->first();
 
-        return response()->json([
-            'status' => 'Like ajouté avec succès',
-            'like' => $like
-        ], 201);
+        if ($existingLike) {
+            $existingLike->delete();
+            return response()->json(['message' => 'Like supprimé avec succès']);
+        } else {
+            $like = $likeable->likes()->create(['user_id' => Auth::id()]);
+            return response()->json(['message' => 'Like ajouté avec succès', 'like' => $like], 201);
+        }
     }
 
     /**
