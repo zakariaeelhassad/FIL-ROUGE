@@ -28,32 +28,63 @@ class UserController extends Controller
     }
 
     public function store(Request $request)
-{
-    $data = $request->validate([
-        'full_name' => ['required', 'string', 'max:255'],
-        'username' => ['required', 'string', 'max:255', 'unique:users'],
-        'email' => ['required', 'email', 'unique:users'],
-        'password' => ['required', 'min:8', 'confirmed'],
-        'role' => ['required', 'in:joueur,manager,club_admin,admin'],
-    ]); 
+    {
+        $data = $request->validate([
+            'full_name' => ['required', 'string', 'max:255'],
+            'username' => ['required', 'string', 'max:255', 'unique:users'],
+            'email' => ['required', 'email', 'unique:users'],
+            'password' => ['required', 'min:8', 'confirmed'],
+            'role' => ['required', 'in:joueur,manager,club_admin,admin'],
+        ]); 
 
-    try {
-        $user = $this->userService->create($data);
-        $token = $user->createToken($user->username);
-        Auth::login($user);
+        try {
+            $user = $this->userService->create($data);
+            $token = $user->createToken($user->username);
+            Auth::login($user);
 
-        return response()->json([
-            'status' => 'success',
-            'data' => $user,
-            'token' => $token
-        ], 201);
-    } catch (\Exception $e) {
-        return response()->json([
-            'status' => 'error',
-            'message' => 'Failed to create user: ' . $e->getMessage()
-        ], 500);
+            return response()->json([
+                'status' => 'success',
+                'data' => $user,
+                'token' => $token
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to create user: ' . $e->getMessage()
+            ], 500);
+        }
     }
-}
+
+    public function login(Request $request)
+    {
+        $credentials = $request->validate([
+            'username' => ['required', 'string'],
+            'password' => ['required', 'string']
+        ]);
+
+        if (!Auth::attempt($credentials)) {
+            return response()->json([
+                'message' => 'Invalid credentials'
+            ], 401);
+        }
+
+        $user = $request->user();
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return response()->json([
+            'user' => $user,
+            'token' => $token
+        ]);
+    }
+
+    public function logout(Request $request)
+    {
+        $request->user()->currentAccessToken()->delete();
+
+        return response()->json([
+            'message' => 'Logged out successfully'
+        ]);
+    }
 
 
     public function show(int $id)
