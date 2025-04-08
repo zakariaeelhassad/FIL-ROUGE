@@ -1,11 +1,9 @@
 <?php
 
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CommenterController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\ProfilController;
-use App\Http\Controllers\ProfilJourController;
-use App\Http\Controllers\ProfilManagerClubController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -25,15 +23,17 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::apiResource('users', \App\Http\Controllers\UserController::class);
+Route::post('/login', [UserController::class, 'login']);
 Route::apiResource('posts', \App\Http\Controllers\PostsController::class);
+
 Route::group(['middleware'=>['auth:sanctum']], function(){
 
-    Route::apiResource('experiences', \App\Http\Controllers\ExperienceController::class);
+    // Route::apiResource('experiences', \App\Http\Controllers\ExperienceController::class);
     Route::apiResource('comment', \App\Http\Controllers\CommenterController::class);
         Route::post('comment/{post_id}' , [CommenterController::class , 'store']);
 
-        Route::post('like/{type}/{id}', [LikeController::class , 'store']);
-
+        
+Route::post('like/{type}/{id}', [LikeController::class , 'store']);
     Route::get('/profile/{id}', [ProfilController::class, 'show']);
     Route::get('/profile', [ProfilController::class, 'getAuthenticatedProfile']);
 
