@@ -19,7 +19,8 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
-            $table->enum('role', ['joueur', 'manager', 'club_admin', 'admin'])->default('joueur');
+            $table->enum('role', ['joueur', 'club_admin', 'admin'])->default('joueur');
+            $table->boolean('is_active')->default(true)->after('email');
             $table->timestamps();
         });        
         
