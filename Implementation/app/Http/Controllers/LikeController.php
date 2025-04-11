@@ -10,77 +10,49 @@ use Illuminate\Support\Facades\Auth;
 class LikeController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
+     * Store or remove a like from a post or comment.
      */
     public function store(Request $request, $type, $id)
     {
         if (!in_array($type, ['post', 'comment'])) {
-            return response()->json(['message' => 'Type invalide'], 400);
+            return redirect()->back()->with('error', 'Type invalide');
         }
 
-        if ($type === 'post') {
-            $likeable = Post::findOrFail($id);
-        } else {
-            $likeable = Comment::findOrFail($id);
-        }
+        $likeable = $type === 'post'
+            ? Post::findOrFail($id)
+            : Comment::findOrFail($id);
 
         $existingLike = $likeable->likes()->where('user_id', Auth::id())->first();
 
         if ($existingLike) {
             $existingLike->delete();
-            return response()->json(['message' => 'Like supprimé avec succès']);
+            return redirect()->back()->with('success', 'Like supprimé avec succès');
         } else {
-            $like = $likeable->likes()->create(['user_id' => Auth::id()]);
-            return response()->json(['message' => 'Like ajouté avec succès', 'like' => $like], 201);
+            $likeable->likes()->create(['user_id' => Auth::id()]);
+            return redirect()->back()->with('success', 'Like ajouté avec succès');
         }
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
+     * Remove a like manually (optional route).
      */
     public function destroy($type, $id)
     {
         if (!in_array($type, ['post', 'comment'])) {
-            return response()->json(['message' => 'Type invalide'], 400);
+            return redirect()->back()->with('error', 'Type invalide');
         }
 
-        if ($type === 'post') {
-            $likeable = Post::findOrFail($id);
-        } else {
-            $likeable = Comment::findOrFail($id);
-        }
+        $likeable = $type === 'post'
+            ? Post::findOrFail($id)
+            : Comment::findOrFail($id);
 
         $like = $likeable->likes()->where('user_id', Auth::id())->first();
+
         if ($like) {
             $like->delete();
-            return response()->json(['message' => 'Like supprimé avec succès']);
+            return redirect()->back()->with('success', 'Like supprimé avec succès');
         }
 
-        return response()->json(['message' => 'Like non trouvé'], 404);
+        return redirect()->back()->with('error', 'Like non trouvé');
     }
-
 }
