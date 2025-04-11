@@ -9,12 +9,18 @@ class ClubAdminProfile extends Model
 {
     use HasFactory;
 
-    protected $table = 'joueur_profiles';
+    protected $table = 'club_admin_profiles';
 
-    protected $fillable = ['user_id' , 'description' , 'ecile' , 'Tactique' , 'Gestion' , 'categoryType'];
+    protected $fillable = [
+        'user_id', 
+        'description', 
+        'ecile', 
+        'Tactique', 
+        'Gestion',
+    ];
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class); 
     }
 }
