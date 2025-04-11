@@ -7,6 +7,7 @@ use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
@@ -17,14 +18,26 @@ class UserController extends Controller
         $this->userService = $userService;
     }
 
+    public function reseau()
+    {
+        if (!auth()->check()) {
+            return redirect()->route('login')->withErrors(['error' => 'Veuillez vous connecter.']);
+        }
+    
+        $users = User::where('id', '!=', auth()->id())->get();
+    
+        return view('page.reseau', compact('users'));
+    }
+
     public function index()
     {
         $users = $this->userService->all();
+        return view('components.reseau.follower', compact('users'));
+    }
 
-        return response()->json([
-            'status' => 'success',
-            'data' => $users
-        ], 200);
+    public function create()
+    {
+        return view('page.signup');
     }
 
     public function store(Request $request)
@@ -34,115 +47,67 @@ class UserController extends Controller
             'username' => ['required', 'string', 'max:255', 'unique:users'],
             'email' => ['required', 'email', 'unique:users'],
             'password' => ['required', 'min:8', 'confirmed'],
-            'role' => ['required', 'in:joueur,manager,club_admin,admin'],
-        ]); 
+            'role' => ['required', 'in:joueur,club_admin,admin'],
+        ]);
 
         try {
             $user = $this->userService->create($data);
-            $token = $user->createToken($user->username);
             Auth::login($user);
-
-            return response()->json([
-                'status' => 'success',
-                'data' => $user,
-                'token' => $token
-            ], 201);
+            return redirect()->route('login')->with('success', 'Compte créé avec succès.');
         } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Failed to create user: ' . $e->getMessage()
-            ], 500);
+            return redirect()->back()->withErrors(['error' => 'Erreur lors de la création : ' . $e->getMessage()]);
         }
     }
-
-    public function login(Request $request)
-    {
-        $credentials = $request->validate([
-            'username' => ['required', 'string'],
-            'password' => ['required', 'string']
-        ]);
-
-        if (!Auth::attempt($credentials)) {
-            return response()->json([
-                'message' => 'Invalid credentials'
-            ], 401);
-        }
-
-        $user = $request->user();
-        $token = $user->createToken('auth_token')->plainTextToken;
-
-        return response()->json([
-            'user' => $user,
-            'token' => $token
-        ]);
-    }
-
-    public function logout(Request $request)
-    {
-        $request->user()->currentAccessToken()->delete();
-
-        return response()->json([
-            'message' => 'Logged out successfully'
-        ]);
-    }
-
 
     public function show(int $id)
     {
         $user = $this->userService->find($id);
 
         if (!$user instanceof User) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'User not found'
-            ], 404);
+            return redirect()->back()->withErrors(['error' => 'Utilisateur non trouvé.']);
         }
 
-        return response()->json([
-            'status' => 'success',
-            'data' => $user
-        ], 200);
+        return view('users.show', compact('user'));
+    }
+
+    public function edit(int $id)
+    {
+        $user = $this->userService->find($id);
+
+        if (!$user instanceof User) {
+            return redirect()->back()->withErrors(['error' => 'Utilisateur non trouvé.']);
+        }
+
+        return view('users.edit', compact('user'));
     }
 
     public function update(Request $request, int $id)
     {
         $data = $request->validate([
             'full_name' => ['required', 'string', 'max:255'],
-            'username' => ['required', 'string', 'max:255', 'unique:users'],
-            'email' => ['required', 'email', 'unique:users'],
+            'username' => ['required', 'string', 'max:255', 'unique:users,username,' . $id],
+            'email' => ['required', 'email', 'unique:users,email,' . $id],
             'password' => ['required', 'min:8', 'confirmed'],
             'role' => ['required', 'in:joueur,manager,club_admin,admin'],
         ]);
 
+        if (empty($data['password'])) {
+            unset($data['password']);
+        }
+
         $result = $this->userService->update($data, $id);
 
         if ($result <= 0) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Failed to update user'
-            ], 500);
+            return redirect()->back()->withErrors(['error' => 'Échec de la mise à jour.']);
         }
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'User updated successfully'
-        ],200);
+        return redirect()->route('users.index')->with('success', 'Utilisateur mis à jour avec succès.');
     }
 
     public function destroy(int $id)
     {
         $result = $this->userService->delete($id);
 
-        // if (!is_bool($result)) {
-        //     return response()->json([
-        //         'status' => 'error',
-        //         'message' => 'Failed to delete user'
-        //     ], 500);
-        // }
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'User deleted successfully'
-        ], 200);
+        return redirect()->back()->with('success', 'Utilisateur supprimé avec succès.');
     }
 }
