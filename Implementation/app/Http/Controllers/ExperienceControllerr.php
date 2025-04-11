@@ -19,97 +19,81 @@ class ExperienceController extends Controller
     {
         $experiences = $this->experienceService->all();
 
-        return response()->json([
-            'status' => 'successz',
-            'data' => $experiences
-        ], 200);
+        return view('experiences.index', compact('experiences'));
+    }
+
+    public function create()
+    {
+        return view('experiences.create');
     }
 
     public function store(Request $request)
     {
         $data = $request->validate([
             'name_club' => ['required', 'string'],
-            'image' => ['nullable ' , 'string'],
+            'image' => ['nullable', 'string'],
             'joining_date' => ['required', 'date'],
-            'exit_date' => ['nullable' , 'date'],
+            'exit_date' => ['nullable', 'date'],
             'place' => ['required', 'string'],
-            'category_type' => ['required' ,' in:sinyor,jinyor,kadiy,minim'],
+            'category_type' => ['required', 'in:sinyor,jinyor,kadiy,minim'],
         ]);
 
         $experience = $this->experienceService->create($data);
 
         if (!$experience instanceof Experience) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Failed to create post'
-            ], 500);
+            return redirect()->back()->with('error', 'Échec de création de l\'expérience.');
         }
 
-        return response()->json([
-            'status' => 'success',
-            'data' => $experience,
-        ], 201);
+        return redirect()->route('experiences.index')->with('success', 'Expérience créée avec succès.');
     }
-
 
     public function show(int $id)
     {
         $experience = $this->experienceService->find($id);
 
         if (!$experience instanceof Experience) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'User not found'
-            ], 404);
+            return redirect()->route('experiences.index')->with('error', 'Expérience introuvable.');
         }
 
-        return response()->json([
-            'status' => 'success',
-            'data' => $experience
-        ], 200);
+        return view('experiences.show', compact('experience'));
+    }
+
+    public function edit(int $id)
+    {
+        $experience = $this->experienceService->find($id);
+
+        if (!$experience instanceof Experience) {
+            return redirect()->route('experiences.index')->with('error', 'Expérience introuvable.');
+        }
+
+        return view('experiences.edit', compact('experience'));
     }
 
     public function update(Request $request, int $id)
     {
         $data = $request->validate([
-            'joueur_profile_id' => ['required' ,'exists:joueur_profiles,id'],
+            'joueur_profile_id' => ['required', 'exists:joueur_profiles,id'],
             'name_club' => ['required', 'string'],
-            'image' => ['nullable ' , 'string'],
+            'image' => ['nullable', 'string'],
             'joining_date' => ['required', 'date'],
-            'exit_date' => ['nullable' , 'date'],
+            'exit_date' => ['nullable', 'date'],
             'place' => ['required', 'string'],
-            'category_type' => ['required' ,' in:sinyor,jinyor,kadiy,minim'],
+            'category_type' => ['required', 'in:sinyor,jinyor,kadiy,minim'],
         ]);
 
         $result = $this->experienceService->update($data, $id);
 
         if ($result <= 0) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Failed to update Post'
-            ], 500);
+            return redirect()->back()->with('error', 'Échec de mise à jour de l\'expérience.');
         }
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Post updated successfully'
-        ],200);
+        return redirect()->route('experiences.index')->with('success', 'Expérience mise à jour avec succès.');
     }
 
     public function destroy(int $id)
     {
-        $result = $this->experienceService->delete($id);
+        $this->experienceService->delete($id);
 
-        // if (!is_bool($result)) {
-        //     return response()->json([
-        //         'status' => 'error',
-        //         'message' => 'Failed to delete Post'
-        //     ], 500);
-        // }
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Post deleted successfully'
-        ], 200);
+        return redirect()->route('experiences.index')->with('success', 'Expérience supprimée avec succès.');
     }
 }
