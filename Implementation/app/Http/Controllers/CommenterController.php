@@ -19,87 +19,55 @@ class CommenterController extends Controller
     {
         $comments = $this->commenterService->all();
 
-        return response()->json([
-            'status' => 'success',
-            'data' => $comments
-        ], 200);
+        return view('comments.index', compact('comments'));
     }
 
-    public function store(Request $request , $post_id)
+    public function store(Request $request, $post_id)
     {
         $data = $request->validate([
-           'content' => 'required|string|max:500',
-        ]); 
+            'content' => 'required|string|max:500',
+        ]);
 
-        $comment = $this->commenterService->create($data , $post_id);
+        $comment = $this->commenterService->create($data, $post_id);
 
         if (!$comment instanceof Comment) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Failed to create comments'
-            ], 500);
+            return redirect()->back()->with('error', 'Failed to create comment');
         }
 
-        return response()->json([
-            'status' => 'success',
-            'data' => $comment,
-        ], 201);
+        return redirect()->back()->with('success', 'Comment created successfully');
     }
-
 
     public function show(int $id)
     {
         $comment = $this->commenterService->find($id);
 
         if (!$comment instanceof Comment) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Post not comments'
-            ], 404);
+            return redirect()->back()->with('error', 'Comment not found');
         }
 
-        return response()->json([
-            'status' => 'success',
-            'data' => $comment
-        ], 200);
+        return view('comments.show', compact('comment'));
     }
 
     public function update(Request $request, int $id)
     {
         $data = $request->validate([
             'content' => ['required', 'string'],
-            'image' => ['required', 'string']
+            'image' => ['required', 'string'],
         ]);
 
         $result = $this->commenterService->update($data, $id);
 
         if ($result <= 0) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Failed to update comments'
-            ], 500);
+            return redirect()->back()->with('error', 'Failed to update comment');
         }
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'comments updated successfully'
-        ],200);
+        return redirect()->back()->with('success', 'Comment updated successfully');
     }
 
     public function destroy(int $id)
     {
-        $result = $this->commenterService->delete($id);
+        $this->commenterService->delete($id);
 
-        // if (!is_bool($result)) {
-        //     return response()->json([
-        //         'status' => 'error',
-        //         'message' => 'Failed to delete comments'
-        //     ], 500);
-        // }
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'comment deleted successfully'
-        ], 200);
+        return redirect()->back()->with('success', 'Comment deleted successfully');
     }
 }
