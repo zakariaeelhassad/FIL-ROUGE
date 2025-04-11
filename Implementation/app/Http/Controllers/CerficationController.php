@@ -5,71 +5,90 @@ namespace App\Http\Controllers;
 use App\Models\Certification;
 use Illuminate\Http\Request;
 
-class CerficationController extends Controller
+class CertificationController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Afficher la liste des certifications.
      */
     public function index()
     {
-        //
+        $certifications = Certification::with('joueurProfile')->latest()->get();
+        return view('certifications.index', compact('certifications'));
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Afficher le formulaire de création.
+     */
+    public function create()
+    {
+        return view('certifications.create');
+    }
+
+    /**
+     * Enregistrer une nouvelle certification.
      */
     public function store(Request $request)
     {
         $request->validate([
-            'joueur_profile_id' => ['required' ,'exists:joueur_profiles,id'],
+            'joueur_profile_id' => ['required', 'exists:joueur_profiles,id'],
             'title' => ['required', 'string'],
             'content' => ['required', 'string'],
             'creation_date' => ['required', 'date'],
         ]);
 
-        $certification = Certification::create([
-            'joueur_profiles_id' => auth()->id(),
+        Certification::create([
+            'joueur_profile_id' => $request->input('joueur_profile_id'),
             'title' => $request->input('title'),
             'content' => $request->input('content'),
             'creation_date' => $request->input('creation_date'),
         ]);
-        return response()->json($certification, 201);
+
+        return redirect()->route('certifications.index')->with('success', 'Certification ajoutée avec succès.');
     }
 
     /**
-     * Display the specified resource.
+     * Afficher une certification spécifique.
      */
     public function show(string $id)
     {
         $certification = Certification::with('joueurProfile')->findOrFail($id);
-        return response()->json($certification);
+        return view('certifications.show', compact('certification'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Afficher le formulaire d'édition.
+     */
+    public function edit(string $id)
+    {
+        $certification = Certification::findOrFail($id);
+        return view('certifications.edit', compact('certification'));
+    }
+
+    /**
+     * Mettre à jour une certification.
      */
     public function update(Request $request, string $id)
     {
-        $certification = Certification::findOrFail($id);
-
         $request->validate([
             'title' => ['required', 'string'],
             'content' => ['required', 'string'],
             'creation_date' => ['required', 'date'],
         ]);
 
+        $certification = Certification::findOrFail($id);
         $certification->update($request->all());
-        return response()->json($certification);
+
+        return redirect()->route('certifications.index')->with('success', 'Certification mise à jour avec succès.');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Supprimer une certification.
      */
     public function destroy(string $id)
     {
         $certification = Certification::findOrFail($id);
         $certification->delete();
 
-        return response()->json(['message' => 'Certification supprimée avec succès']);
+        return redirect()->route('certifications.index')->with('success', 'Certification supprimée avec succès.');
     }
 }
