@@ -31,7 +31,7 @@ class PostService
 
     public function all()
     {
-        return $this->repository->all();
+         return $this->repository->all()->load('user');
     }
 
     public function find(int $id)
