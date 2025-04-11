@@ -12,6 +12,7 @@ class PostsController extends Controller
 
     public function __construct(PostService $postService)
     {
+        $this->middleware('auth'); 
         $this->postService = $postService;
     }
 
@@ -19,10 +20,7 @@ class PostsController extends Controller
     {
         $posts = $this->postService->all();
 
-        return response()->json([
-            'status' => 'success',
-            'data' => $posts
-        ], 200);
+        return view('page.home', compact('posts'));
     }
 
     public function store(Request $request)
@@ -30,40 +28,26 @@ class PostsController extends Controller
         $data = $request->validate([
             'content' => ['required', 'string'],
             'image' => ['required', 'string'],
-
         ]); 
 
         $post = $this->postService->create($data);
 
         if (!$post instanceof Post) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Failed to create post'
-            ], 500);
+            return redirect()->back()->with('error', 'Échec de la création du post');
         }
 
-        return response()->json([
-            'status' => 'success',
-            'data' => $post,
-        ], 201);
+        return redirect()->route('posts.index')->with('success', 'Post créé avec succès');
     }
-
 
     public function show(int $id)
     {
         $post = $this->postService->find($id);
 
         if (!$post instanceof Post) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Post not found'
-            ], 404);
+            return redirect()->back()->with('error', 'Post non trouvé');
         }
 
-        return response()->json([
-            'status' => 'success',
-            'data' => $post
-        ], 200);
+        return view('posts.show', compact('post'));
     }
 
     public function update(Request $request, int $id)
@@ -76,32 +60,16 @@ class PostsController extends Controller
         $result = $this->postService->update($data, $id);
 
         if ($result <= 0) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Failed to update Post'
-            ], 500);
+            return redirect()->back()->with('error', 'Échec de la mise à jour du post');
         }
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Post updated successfully'
-        ],200);
+        return redirect()->route('posts.index')->with('success', 'Post mis à jour avec succès');
     }
 
     public function destroy(int $id)
     {
         $result = $this->postService->delete($id);
 
-        // if (!is_bool($result)) {
-        //     return response()->json([
-        //         'status' => 'error',
-        //         'message' => 'Failed to delete Post'
-        //     ], 500);
-        // }
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Post deleted successfully'
-        ], 200);
+        return redirect()->route('posts.index')->with('success', 'Post supprimé avec succès');
     }
 }
