@@ -13,71 +13,17 @@ class ProfilController extends Controller
         $user = User::find($id);
 
         if (!$user) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'User not found'
-            ], 404);
+            // Redirect back with error message if user not found
+            return redirect()->back()->with('error', 'Utilisateur non trouvé.');
         }
 
         $posts = $user->posts;
 
         if ($user->role === 'joueur') {
-            return response()->json([
-                'status' => 'success',
-                'data' => $user,
-                'posts' => $posts,
-            ], 200);
-
-        } elseif ($user->role === 'club_admin') {
-            $clubAdminProfile = $user->clubAdminProfile;
-
-            if ($clubAdminProfile) {
-                $profileData = [
-                    'description' => $clubAdminProfile->description,
-                    'ecile' => $clubAdminProfile->ecile,
-                    'tactique' => $clubAdminProfile->Tactique,
-                    'gestion' => $clubAdminProfile->Gestion,
-                ];
-            } else {
-                $profileData = null;
-            }
-
-            return response()->json([
-                'status' => 'success',
-                'data' => [
-                    'user' => $user,
-                    'profile' => $profileData,
-                    'posts' => $posts,
-                ]
-            ], 200);
-        } else {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Unauthorized role'
-            ], 403);
-        }
-    }
-
-
-    public function getAuthenticatedProfile()
-    {
-        $user = Auth::user();
-
-        if (!$user) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'User not authenticated'
-            ], 401);
-        }
-
-        $posts = $user->posts;
-
-        if ($user->role === 'joueur') {
-            return response()->json([
-                'status' => 'success',
-                'data' => $user,
-                'posts' => $posts,
-            ], 200);
+            return view('profil.joueur', [
+                'user' => $user,
+                'posts' => $posts
+            ]);
 
         } elseif ($user->role === 'club_admin') {
             $clubAdminProfile = $user->clubAdminProfile;
@@ -89,19 +35,49 @@ class ProfilController extends Controller
                 'gestion' => $clubAdminProfile->Gestion,
             ] : null;
 
-            return response()->json([
-                'status' => 'success',
-                'data' => [
-                    'user' => $user,
-                    'profile' => $profileData,
-                    'posts' => $posts,
-                ]
-            ], 200);
+            return view('profil.club_admin', [
+                'user' => $user,
+                'profile' => $profileData,
+                'posts' => $posts
+            ]);
         } else {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Unauthorized role'
-            ], 403);
+            return redirect()->back()->with('error', 'Rôle non autorisé.');
+        }
+    }
+
+    public function getAuthenticatedProfile()
+    {
+        $user = Auth::user();
+
+        if (!$user) {
+            return redirect()->route('login')->with('error', 'Veuillez vous connecter.');
+        }
+
+        $posts = $user->posts;
+
+        if ($user->role === 'joueur') {
+            return view('profil.joueur', [
+                'user' => $user,
+                'posts' => $posts
+            ]);
+
+        } elseif ($user->role === 'club_admin') {
+            $clubAdminProfile = $user->clubAdminProfile;
+
+            $profileData = $clubAdminProfile ? [
+                'description' => $clubAdminProfile->description,
+                'ecile' => $clubAdminProfile->ecile,
+                'tactique' => $clubAdminProfile->Tactique,
+                'gestion' => $clubAdminProfile->Gestion,
+            ] : null;
+
+            return view('profil.club_admin', [
+                'user' => $user,
+                'profile' => $profileData,
+                'posts' => $posts
+            ]);
+        } else {
+            return redirect()->back()->with('error', 'Rôle non autorisé.');
         }
     }
 }
