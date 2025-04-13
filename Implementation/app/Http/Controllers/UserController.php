@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Follow;
 use App\Models\User;
 use App\Services\UserService;
 use Illuminate\Http\Request;
@@ -23,10 +24,12 @@ class UserController extends Controller
         if (!auth()->check()) {
             return redirect()->route('login')->withErrors(['error' => 'Veuillez vous connecter.']);
         }
-    
+
         $users = User::where('id', '!=', auth()->id())->get();
-    
-        return view('page.reseau', compact('users'));
+
+        $followRequests = Follow::where('following_id', auth()->id())->get();
+
+        return view('pages.reseau', compact('users', 'followRequests'));
     }
 
     public function index()
@@ -37,7 +40,7 @@ class UserController extends Controller
 
     public function create()
     {
-        return view('page.signup');
+        return view('pages.signup');
     }
 
     public function store(Request $request)
@@ -52,8 +55,24 @@ class UserController extends Controller
 
         try {
             $user = $this->userService->create($data);
+
+            if ($user->role === 'club_admin') {
+                \App\Models\ClubAdminProfile::create([
+                    'user_id' => $user->id,
+                    'description' => '',
+                    'ecile' => '',
+                    'Tactique' => '',
+                    'Gestion' => '',
+                ]);
+            }else {
+                \App\Models\JoueurProfile::create([
+                    'user_id' => $user->id,
+                ]);
+            }
+
             Auth::login($user);
-            return redirect()->route('login')->with('success', 'Compte créé avec succès.');
+            return redirect()->route('profil.joueur') 
+                ->with('success', 'Compte créé avec succès.');
         } catch (\Exception $e) {
             return redirect()->back()->withErrors(['error' => 'Erreur lors de la création : ' . $e->getMessage()]);
         }
@@ -85,23 +104,31 @@ class UserController extends Controller
     {
         $data = $request->validate([
             'full_name' => ['required', 'string', 'max:255'],
-            'username' => ['required', 'string', 'max:255', 'unique:users,username,' . $id],
-            'email' => ['required', 'email', 'unique:users,email,' . $id],
-            'password' => ['required', 'min:8', 'confirmed'],
-            'role' => ['required', 'in:joueur,manager,club_admin,admin'],
+            'bio' => ['nullable', 'string'],
+            'profile_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png'],
+            'banner_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png'],
         ]);
 
-        if (empty($data['password'])) {
-            unset($data['password']);
+        $user = Auth::user();
+
+        if ($request->hasFile('profile_image')) {
+            $profileImagePath = $request->file('profile_image')->store('profile_images', 'public');
+            $data['profile_image'] = $profileImagePath;
         }
 
+        if ($request->hasFile('banner_image')) {
+            $bannerImagePath = $request->file('banner_image')->store('banner_images', 'public');
+            $data['banner_image'] = $bannerImagePath;
+        }
+
+        // Update user data
         $result = $this->userService->update($data, $id);
 
         if ($result <= 0) {
             return redirect()->back()->withErrors(['error' => 'Échec de la mise à jour.']);
         }
 
-        return redirect()->route('users.index')->with('success', 'Utilisateur mis à jour avec succès.');
+        return redirect()->route('profil.joueur')->with('success', 'Profil mis à jour avec succès.');
     }
 
     public function destroy(int $id)
