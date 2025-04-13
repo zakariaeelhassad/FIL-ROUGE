@@ -21,8 +21,9 @@ class Comment extends Model
         return $this->belongsTo(Post::class);
     }
 
-    public function likes()
+    public function replies()
     {
-        return $this->morphMany(Like::class, 'likeable');
+        return $this->hasMany(CommentReply::class);
     }
+
 }
