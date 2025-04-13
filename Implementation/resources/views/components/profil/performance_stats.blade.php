@@ -1,13 +1,10 @@
 <div class="flex-1 border-2 border-blue-500 rounded-xl p-4">
-    <!-- Header Section -->
     <div class="flex justify-between items-center mb-3">
         <h2 class="font-bold">Performance Stats</h2>
         <button class="px-3 py-1 border border-blue-500 text-blue-500 rounded-full text-sm">Edit</button>
     </div>
 
-    <!-- Stats Section -->
     <div class="flex space-x-3 justify-center">
-        <!-- Activity Stat -->
         <div class="text-center">
             <div class="rounded-full bg-gray-200 p-2 w-14 h-14 flex items-center justify-center">
                 <span class="font-bold">245</span>
@@ -15,7 +12,6 @@
             <span class="text-xs">activité</span>
         </div>
         
-        <!-- Experience Stat -->
         <div class="text-center">
             <div class="rounded-full bg-gray-200 p-2 w-14 h-14 flex items-center justify-center">
                 <span class="font-bold">87</span>
@@ -23,7 +19,6 @@
             <span class="text-xs">expérience</span>
         </div>
 
-        <!-- Certification Stat -->
         <div class="text-center">
             <div class="rounded-full bg-gray-200 p-2 w-14 h-14 flex items-center justify-center">
                 <span class="font-bold">112</span>
