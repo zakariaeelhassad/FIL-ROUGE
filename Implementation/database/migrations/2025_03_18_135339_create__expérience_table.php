@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('expérience', function (Blueprint $table) {
+        Schema::create('experience', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('joueur_profiles_id')->constrained('joueur_profiles')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->string('nameClub');
             $table->string('image')->nullable(); 
             $table->date('joiningDate');
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::dropIfExists('experience');
     }
 };
