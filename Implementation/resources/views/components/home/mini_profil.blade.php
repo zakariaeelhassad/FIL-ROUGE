@@ -1,6 +1,5 @@
 <div class="mr-8">
     <div class="w-70 bg-white rounded-3xl border border-blue-400 shadow-md p-6">
-        <!-- Header -->
         <div class="bg-navy-900 h-28 relative">
             <div class="absolute left-0 right-0 flex justify-center" style="top: 50%;">
                 <div class="rounded-full bg-gray-200 p-1 border-2 border-white">
@@ -13,7 +12,6 @@
             </div>
         </div>
     
-        <!-- Contenu -->
         <div class="pt-16 pb-6 px-4 text-center">
             <h2 class="text-blue-500 font-bold text-xl uppercase">CRISTIANO RONALDO</h2>
             <p class="text-gray-400 text-sm mt-1">Professional Soccer Player | Midfielder</p>
