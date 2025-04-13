@@ -15,12 +15,12 @@ class Post extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class); 
+        return $this->belongsTo(User::class);
     }
 
-    public function likes()
+    public function images()
     {
-        return $this->hasMany(Like::class); 
+        return $this->hasMany(PostImage::class);
     }
 
     public function comments()
@@ -28,5 +28,9 @@ class Post extends Model
         return $this->hasMany(Comment::class);
     }
 
+    public function reactions()
+    {
+        return $this->hasMany(Reaction::class);
+    }
 
 }
