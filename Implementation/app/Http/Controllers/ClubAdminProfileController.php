@@ -9,14 +9,19 @@ class ClubAdminProfileController extends Controller
 {
     public function show($userId)
     {
-        // نحصل على البروفايل الخاص بالـ Club Admin
-        $profile = ClubAdminProfile::where('user_id', $userId)->first();
-
-        if (!$profile) {
-            return view('errors.profile_not_found'); // صفحة تعرض خطأ "Profile not found"
+        $user = auth()->user();
+        if (!auth()->check()) {
+            return redirect()->route('login')->with('error', 'Veuillez vous connecter pour accéder à ce profil.');
         }
 
-        return view('profiles.show', compact('profile')); // صفحة لعرض البروفايل
+        $profile = ClubAdminProfile::where('user_id', $userId)->first();
+        $posts = $user->posts()->with('user', 'images')->latest()->get();
+
+        if (!$profile) {
+            return view('errors.profile_not_found'); 
+        }
+
+        return view('pages.profil_club_manager', compact('user', 'posts', 'profile'));
     }
 
     public function store(Request $request)
@@ -28,13 +33,13 @@ class ClubAdminProfileController extends Controller
 
         $profile = ClubAdminProfile::create([
             'user_id' => $request->user_id,
-            'description' => $request->description,
+            'description' => '',
             'ecile' => '', 
             'Tactique' => '', 
             'Gestion' => '',
         ]);
 
-        return redirect()->route('profiles.show', ['userId' => $profile->user_id]) // إعادة توجيه إلى صفحة البروفايل
+        return redirect()->route('profiles.show', ['userId' => $profile->user_id]) 
             ->with('message', 'Profile created successfully');
     }
 
@@ -43,7 +48,7 @@ class ClubAdminProfileController extends Controller
         $profile = ClubAdminProfile::where('user_id', $userId)->first();
 
         if (!$profile) {
-            return view('errors.profile_not_found'); // صفحة تعرض خطأ "Profile not found"
+            return view('errors.profile_not_found'); 
         }
 
         $profile->update($request->only(['description', 'ecile', 'Tactique', 'Gestion']));
@@ -57,12 +62,12 @@ class ClubAdminProfileController extends Controller
         $user = User::find($userId);
 
         if (!$user) {
-            return view('errors.user_not_found'); // صفحة تعرض خطأ "User not found"
+            return view('errors.user_not_found'); 
         }
 
         $user->delete();
 
-        return redirect()->route('') // إعادة التوجيه إلى الصفحة الرئيسية أو أي صفحة أخرى
+        return redirect()->route('') 
             ->with('message', 'User and profile deleted successfully');
     }
 
@@ -71,11 +76,11 @@ class ClubAdminProfileController extends Controller
         $user = User::find($userId);
 
         if (!$user) {
-            return view('errors.user_not_found'); // صفحة تعرض خطأ "User not found"
+            return view('errors.user_not_found'); 
         }
 
         if ($user->clubAdminProfile) {
-            return view('errors.profile_exists'); // صفحة تعرض خطأ "Profile already exists"
+            return view('errors.profile_exists');
         }
 
         $profile = ClubAdminProfile::create([
@@ -90,3 +95,4 @@ class ClubAdminProfileController extends Controller
             ->with('message', 'Profile created successfully');
     }
 }
+g
