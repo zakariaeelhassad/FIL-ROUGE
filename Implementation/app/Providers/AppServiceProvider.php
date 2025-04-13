@@ -23,9 +23,6 @@ class AppServiceProvider extends ServiceProvider
             return new PostService($app->make(RepositoryInterface::class));
         });
 
-        $this->app->bind(ExperienceService::class, function ($app) {
-            return new ExperienceService($app->make(RepositoryInterface::class));
-        });
     }
 
     /**
