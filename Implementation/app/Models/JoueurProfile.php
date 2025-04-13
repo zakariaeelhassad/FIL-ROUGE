@@ -11,6 +11,8 @@ class JoueurProfile extends Model
 
     protected $table = 'joueur_profiles';
 
+    protected $fillable = ['user_id'];
+
     public function user()
     {
         return $this->belongsTo(User::class);
