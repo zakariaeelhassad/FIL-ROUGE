@@ -12,18 +12,19 @@ class Experience extends Model
     protected $table = 'experience';
 
     protected $fillable = [
-        'joueur_profile_id',
-        'name_club',
+        'user_id',
+        'nameClub',
         'image',
-        'joining_date',
-        'exit_date',
+        'joiningDate',
+        'exitDate',
         'place',
-        'category_type',
+        'categoryType',
     ];
 
-    public function profilJoueur()
+
+    public function user()
     {
-        return $this->belongsTo(JoueurProfile::class);
+        return $this->belongsTo(User::class); 
     }
 
 }
