@@ -18,6 +18,9 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('bio')->nullable(); 
+            $table->string('profile_image')->nullable(); 
+            $table->string('banner_image')->nullable();
             $table->rememberToken();
             $table->enum('role', ['joueur', 'club_admin', 'admin'])->default('joueur');
             $table->boolean('is_active')->default(true)->after('email');
