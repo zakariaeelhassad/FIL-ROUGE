@@ -14,7 +14,7 @@ class ExperienceService
 
     public function create(array $data)
     {
-        $data['joueur_profiles_id'] = auth()->id(); 
+        $data['user_id'] = auth()->id(); 
         return $this->repository->create($data);
     }
 
