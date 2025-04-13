@@ -16,24 +16,58 @@ class PostsController extends Controller
         $this->postService = $postService;
     }
 
+    public function profil(){
+        $user = auth()->user();
+        
+        if (!auth()->check()) {
+            return redirect()->route('login')->with('error', 'Veuillez vous connecter pour accéder à ce profil.');
+        }
+    
+        if ($user->role == 'joueur') {
+            $experiences = $user->experiences()->with('user')->latest()->get();  
+            $profile = \App\Models\JoueurProfile::where('user_id', $user->id)->first();
+            $posts = $user->posts()->with('user', 'images')->latest()->get();
+    
+            return view('pages.profil_joueur', compact('user', 'posts', 'profile' , 'experiences'));
+        }
+    
+        if ($user->role == 'club_admin') {
+            $profile = \App\Models\ClubAdminProfile::where('user_id', $user->id)->first();
+            $titres = \App\Models\Titre::where('user_id', $user->id)->latest()->get();
+            $posts = $user->posts()->with('user', 'images')->latest()->get();
+    
+            return view('pages.profil_club_manager', compact('user', 'posts', 'profile', 'titres'));
+        }
+    
+        return redirect()->route('home')->with('error', 'Role not found');
+    }
+    
+
     public function index()
     {
         $posts = $this->postService->all();
 
-        return view('page.home', compact('posts'));
+        return view('pages.home', compact('posts'));
     }
 
     public function store(Request $request)
     {
         $data = $request->validate([
             'content' => ['required', 'string'],
-            'image' => ['required', 'string'],
+            'image' => ['nullable', 'image', 'max:2048'], 
         ]); 
 
-        $post = $this->postService->create($data);
+        $post = new Post();
+        $post->user_id = auth()->id();
+        $post->content = $data['content'];
+        $post->save();
 
-        if (!$post instanceof Post) {
-            return redirect()->back()->with('error', 'Échec de la création du post');
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('posts', 'public');
+           
+            $post->images()->create([
+                'path' => $imagePath
+            ]);
         }
 
         return redirect()->route('posts.index')->with('success', 'Post créé avec succès');
@@ -47,7 +81,9 @@ class PostsController extends Controller
             return redirect()->back()->with('error', 'Post non trouvé');
         }
 
-        return view('posts.show', compact('post'));
+        $user = $post->user;
+
+        return view('components.profil.activite', compact('post' , 'user'));
     }
 
     public function update(Request $request, int $id)
