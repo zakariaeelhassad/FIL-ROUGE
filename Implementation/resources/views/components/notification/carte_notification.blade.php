@@ -4,7 +4,6 @@
         Personnes que vous connaissez
       </h2>
   
-      <!-- Notification 1 -->
       <div class="border-2 border-blue-400 rounded-full overflow-hidden mb-4 p-3 flex justify-between items-center">
         <div class="flex items-center min-w-0">
           <div class="w-12 h-12 rounded-full overflow-hidden mr-3 flex-shrink-0">
@@ -26,7 +25,6 @@
         </div>
       </div>
   
-      <!-- Notification 2 -->
       <div class="border-2 border-blue-400 rounded-full overflow-hidden mb-4 p-3 flex justify-between items-center">
         <div class="flex items-center min-w-0">
           <div class="w-12 h-12 rounded-full overflow-hidden mr-3 flex-shrink-0">
@@ -48,7 +46,6 @@
         </div>
       </div>
   
-      <!-- Notification 3 -->
       <div class="border-2 border-blue-400 rounded-full overflow-hidden mb-4 p-3 flex justify-between items-center">
         <div class="flex items-center min-w-0">
           <div class="w-12 h-12 rounded-full overflow-hidden mr-3 flex-shrink-0">
@@ -68,7 +65,6 @@
         </div>
       </div>
   
-      <!-- Notification 4 -->
       <div class="border-2 border-blue-400 rounded-full overflow-hidden mb-4 p-3 flex justify-between items-center">
         <div class="flex items-center min-w-0">
           <div class="w-12 h-12 rounded-full overflow-hidden mr-3 flex-shrink-0">
