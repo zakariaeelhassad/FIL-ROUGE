@@ -18,22 +18,22 @@
         <div class="p-3">
             <div class="mt-4 border-b-2 border-blue-500">
                 <nav class="flex space-x-6 text-center">
-                    <button data-target="description" class="nav-button pb-2 text-gray-700 transition-colors duration-300 hover:text-blue-500" onclick="setActiveSection('description')">
+                    <button data-target="description" class="nav-button pb-2 text-gray-700 transition-colors duration-300 hover:text-blue-500" >
                         Description
                     </button>
-                    <button data-target="ecole" class="nav-button pb-2 text-gray-700 transition-colors duration-300 hover:text-blue-500" onclick="setActiveSection('ecole')">
+                    <button data-target="ecole" class="nav-button pb-2 text-gray-700 transition-colors duration-300 hover:text-blue-500" >
                         Ecole
                     </button>
-                    <button data-target="tactique" class="nav-button pb-2 text-gray-700 transition-colors duration-300 hover:text-blue-500" onclick="setActiveSection('tactique')">
+                    <button data-target="tactique" class="nav-button pb-2 text-gray-700 transition-colors duration-300 hover:text-blue-500" >
                         Tactique
                     </button>
-                    <button data-target="gestion" class="nav-button pb-2 text-gray-700 transition-colors duration-300 hover:text-blue-500" onclick="setActiveSection('gestion')">
+                    <button data-target="gestion" class="nav-button pb-2 text-gray-700 transition-colors duration-300 hover:text-blue-500" >
                         Gestion
                     </button>
-                    <button data-target="activité" class="nav-button pb-2 text-gray-700 transition-colors duration-300 hover:text-blue-500" onclick="setActiveSection('activite')">
+                    <button data-target="activité" class="nav-button pb-2 text-gray-700 transition-colors duration-300 hover:text-blue-500" >
                         Activité
                     </button>
-                    <button data-target="titres" class="nav-button pb-2 text-gray-700 transition-colors duration-300 hover:text-blue-500" onclick="setActiveSection('titres')">
+                    <button data-target="titres" class="nav-button pb-2 text-gray-700 transition-colors duration-300 hover:text-blue-500" >
                         Titres
                     </button>
                 </nav>
@@ -86,6 +86,17 @@
                 });
             });
         });
+
+        function openModal(model) {
+        document.getElementById(model).classList.remove('hidden');
+        console.log("open gestionModal");
+    }
+
+    function closeModal(model) {
+        document.getElementById(model).classList.add('hidden');
+        console.log("close gestionModal");
+
+    }
     </script>
 </body>
 </html>
