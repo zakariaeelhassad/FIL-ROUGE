@@ -46,7 +46,6 @@
             @endif
           
             <div class="space-y-6">
-              <!-- Full Name Input -->
               <div>
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="full_name">Nom complet</label>
                 <input
@@ -63,7 +62,6 @@
                 </p>
               </div>
           
-              <!-- Username Input -->
               <div>
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="username">Nom d'utilisateur</label>
                 <input
@@ -80,7 +78,6 @@
                 </p>
               </div>
           
-              <!-- Email Input -->
               <div>
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="email">Email</label>
                 <input
@@ -97,7 +94,6 @@
                 </p>
               </div>
           
-              <!-- Password Input -->
               <div>
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="password">Mot de passe</label>
                 <input
@@ -113,7 +109,6 @@
                 </p>
               </div>
           
-              <!-- Confirm Password Input -->
               <div>
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="password_confirmation">Confirmer le mot de passe</label>
                 <input
@@ -129,7 +124,6 @@
                 </p>
               </div>
           
-              <!-- Role Selection -->
               <div>
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="role">Rôle</label>
                 <select
@@ -146,7 +140,6 @@
                 </p>
               </div>
           
-              <!-- Signup Button -->
               <div>
                 <button
                   type="submit"
