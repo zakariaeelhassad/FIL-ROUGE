@@ -1,11 +1,9 @@
 <nav class="bg-gray-900 text-white shadow-md py-3 px-4">
     <div class="container mx-auto flex justify-between items-center">
-        <!-- Logo -->
         <div class="flex items-center space-x-4">
             <a href="/" class="text-3xl font-bold bg-blue-600 rounded-md p-1">
                 <span class="px-2">GI.</span>
             </a>
-            <!-- Bouton de recherche -->
             <div class="bg-gray-700 p-2 rounded-full cursor-pointer">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -13,7 +11,6 @@
             </div>
         </div>
     
-        <!-- Boutons centraux -->
         <div class="flex space-x-4 items-center">
             <a href="/" class="bg-gray-700 p-2 rounded-full cursor-pointer">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -28,7 +25,6 @@
             </a>
         </div>
     
-        <!-- Profil -->
         <div class="flex items-center space-x-4">
             <a href="/notification" class="bg-gray-700 p-2 rounded-full cursor-pointer">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -37,7 +33,6 @@
             </a>
     
             <div class="relative inline-block text-left">
-                <!-- Trigger button -->
                 <button onclick="toggleDropdown()" class="flex items-center bg-gray-700 rounded-full pl-1 pr-3 py-1 cursor-pointer text-white">
                   <img src="https://via.placeholder.com/30" alt="Profile" class="rounded-full h-8 w-8 border-2 border-yellow-500" />
                   <span class="ml-2">Alex Rodriguez</span>
@@ -46,9 +41,16 @@
                   </svg>
                 </button>
               
-                <!-- Dropdown menu -->
                 <div id="dropdownMenu" class="hidden absolute right-0 mt-2 w-40 bg-white rounded-md shadow-lg border z-50">
-                  <a href="/profil_Club" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profil</a>
+                    @if (Auth::check())
+                        @if (Auth::user()->role == 'joueur')
+                            <a href="{{ route('profil.joueur') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profil Joueur</a>
+                        @elseif (Auth::user()->role == 'club_admin')
+                            <a href="/profil/joueur" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profil Club</a>
+                        @endif
+                    @endif
+
+                               
                   <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
                     @csrf
                 </form>
@@ -79,4 +81,16 @@
         menu.classList.add("hidden");
       }
     });
+
+
+    function openModal(model) {
+        document.getElementById(model).classList.remove('hidden');
+        console.log("open gestionModal");
+    }
+
+    function closeModal(model) {
+        document.getElementById(model).classList.add('hidden');
+        console.log("close gestionModal");
+
+    }
   </script>
