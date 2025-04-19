@@ -23,19 +23,38 @@ class CommenterController extends Controller
     }
 
     public function store(Request $request, $post_id)
-    {
-        $data = $request->validate([
-            'content' => 'required|string|max:500',
-        ]);
+{
+    // Validate the incoming request data
+    $data = $request->validate([
+        'content' => 'required|string|max:500',
+    ]);
 
-        $comment = $this->commenterService->create($data, $post_id);
+    // Create the comment
+    $comment = $this->commenterService->create($data, $post_id);
 
-        if (!$comment instanceof Comment) {
-            return redirect()->back()->with('error', 'Failed to create comment');
+    // Handle the case where the comment creation fails
+    if (!$comment instanceof Comment) {
+        // If it's an HTMX request, return an error message as a response
+        if ($request->header('HX-Request')) {
+            return response('<div class="text-red-500 p-2">Failed to create comment</div>', 422);
         }
 
-        return redirect()->back()->with('success', 'Comment created successfully');
+        // If it's a regular request, redirect back with an error
+        return redirect()->back()->with('error', 'Failed to create comment');
     }
+
+    // If it's an HTMX request, return just the new comment HTML
+    if ($request->header('HX-Request')) {
+        return response()
+        ->view('partials.comments', ['comment' => $comment])
+        ->header('HX-Trigger', '{"clearCommentForm": {"postId": ' . $post_id . '}}');    
+    }
+
+    // Regular form submission fallback
+    return redirect()->back()->with('success', 'Comment created successfully');
+}
+
+    
 
     public function show(int $id)
     {
