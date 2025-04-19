@@ -23,7 +23,7 @@
             <p class="text-gray-300">{{ Auth::user()->bio ?? 'No bio available' }}</p>
             <div class="mt-1">
                 @if(Auth::user()->role == 'club_admin')
-                    <span class="px-3 py-1 bg-white text-[#0a1445] text-xs rounded-full">Club Admin</span>
+                    <span class="px-3 py-1 bg-white text-[#0a1445] text-xs rounded-full">Club </span>
                 @elseif(Auth::user()->role == 'joueur')
                     <span class="px-3 py-1 bg-white text-[#0a1445] text-xs rounded-full">Player</span>
                 @endif
