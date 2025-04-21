@@ -131,4 +131,31 @@ class User extends Authenticatable
                     ->where('status', 'accepted')
                     ->exists();
     }
+
+    public function chatsAsUserOne()
+    {
+        return $this->hasMany(Chat::class, 'user_one_id');
+    }
+
+    public function chatsAsUserTwo()
+    {
+        return $this->hasMany(Chat::class, 'user_two_id');
+    }
+
+    public function sentMessages()
+    {
+        return $this->hasMany(Message::class, 'sender_id');
+    }
+
+    public function receivedMessages()
+    {
+        return $this->hasMany(Message::class, 'receiver_id');
+    }
+
+    // Get all chats for this user
+    public function chats()
+    {
+        return Chat::where('user_one_id', $this->id)
+            ->orWhere('user_two_id', $this->id);
+    }
 }
