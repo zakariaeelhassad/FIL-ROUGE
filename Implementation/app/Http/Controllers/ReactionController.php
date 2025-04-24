@@ -36,7 +36,6 @@ class ReactionController extends Controller
             ]);
         }
 
-        // Get the updated user reaction
         $userReaction = Reaction::where('user_id', auth()->id())
             ->where('post_id', $post->id)
             ->first();
