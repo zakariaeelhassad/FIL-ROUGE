@@ -18,11 +18,6 @@ class Post extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function images()
-    {
-        return $this->hasMany(PostImage::class);
-    }
-
     public function comments()
     {
         return $this->hasMany(Comment::class);
@@ -32,5 +27,11 @@ class Post extends Model
     {
         return $this->hasMany(Reaction::class);
     }
+
+    public function media()
+    {
+        return $this->hasMany(PostMedia::class);
+    }
+
 
 }
