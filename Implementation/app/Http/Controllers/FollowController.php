@@ -11,6 +11,23 @@ class FollowController extends Controller
     /**
      * Follow a user (send a follow request)
      */
+
+    public function reseau()
+    {
+        $user = auth()->user();
+         
+        $followingIds = $user->following()->pluck('following_id')->toArray();
+        $followingIds[] = $user->id; 
+        $users = User::where('id', '!=', auth()->id())->get();
+         
+        $suggestedUsers = User::whereNotIn('id', $followingIds)
+                            ->inRandomOrder()
+                            ->limit(15)
+                            ->get();
+         
+        return view('pages.reseau', compact('users' , 'suggestedUsers'));
+    }
+    
     public function follow($userId)
     {
         $user = auth()->user();
@@ -101,7 +118,7 @@ class FollowController extends Controller
         $followers = $user->followers()->with('follower')->where('status', 'accepted')->get();
         $pendingFollowers = $user->followers()->with('follower')->where('status', 'pending')->get();
         
-        return view('pages.followers', compact('followers', 'pendingFollowers', 'user'));
+        return view('pages.reseau.followers', compact('followers', 'pendingFollowers', 'user'));
     }
 
     /**
@@ -116,7 +133,7 @@ class FollowController extends Controller
         $pendingFollowing = $user->following()->with('following')->where('status', 'pending')->get();
         $acceptedFollowing = $user->following()->with('following')->where('status', 'accepted')->get();
         
-        return view('pages.following', compact('following', 'pendingFollowing', 'acceptedFollowing', 'user'));
+        return view('pages.reseau.following', compact('following', 'pendingFollowing', 'acceptedFollowing', 'user'));
     }
 
     /**
@@ -134,6 +151,6 @@ class FollowController extends Controller
                             ->limit(15)
                             ->get();
         
-        return view('pages.suggestions', compact('suggestedUsers'));
+        return view('pages.reseau.suggestions', compact('suggestedUsers'));
     }
 }
