@@ -16,11 +16,13 @@
                     <div class="absolute left-1/2 transform -translate-x-1/2 -bottom-8">
                         <div class="w-16 h-16 rounded-full bg-white p-1 shadow-md">
                             <div class="w-full h-full rounded-full overflow-hidden bg-gray-100">
-                                <img 
-                                    src="{{asset('storage/' . $user->profile_image ) ?? 'https://placehold.co/100x100/3b82f6/ffffff.png?text='.substr($user->full_name, 0, 2) }}" 
-                                    alt="Profile photo" 
-                                    class="w-full h-full object-cover" 
-                                />
+                                <a href="{{ route('profil.show', ['id' => $user->id]) }}">
+                                    <img 
+                                        src="{{asset('storage/' . $user->profile_image ) ?? 'https://placehold.co/100x100/3b82f6/ffffff.png?text='.substr($user->full_name, 0, 2) }}" 
+                                        alt="Profile photo" 
+                                        class="w-full h-full object-cover" 
+                                    />
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -40,13 +42,7 @@
 
                     @php
                         $authUser = auth()->user();
-                        $existingFollow = \App\Models\Follow::where('follower_id', $authUser->id)
-                            ->where('following_id', $user->id)
-                            ->first();
-                        $isFriend = \App\Models\Follow::where('follower_id', $user->id)
-                            ->where('following_id', $authUser->id)
-                            ->where('status', 'accepted')
-                            ->exists();
+                        $isFollowing = $authUser->isFollowing($user->id);
                     @endphp
 
                     @if ($authUser->id === $user->id)
@@ -54,24 +50,20 @@
                             <i class="fas fa-user h-4 w-4 inline mr-1"></i>
                             Your Profile
                         </button>
-                    @elseif ($existingFollow && $existingFollow->status === 'pending')
-                        <button class="w-full bg-yellow-50 text-yellow-600 border border-yellow-200 px-4 py-2 rounded-lg text-sm font-medium cursor-not-allowed">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            Request Pending
-                        </button>
-                    @elseif ($isFriend)
-                        <button class="w-full bg-green-50 text-green-600 border border-green-200 px-4 py-2 rounded-lg text-sm font-medium cursor-default">
-                            <i class="fas fa-check h-4 w-4 inline mr-1"></i>
-                            Connected
-                        </button>
+                    @elseif ($isFollowing)
+                        <form action="{{ route('unfollow', $user->id) }}" method="POST" class="follow-form">
+                            @csrf
+                            <button type="submit" class="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-lg text-sm font-medium transition">
+                                <i class="fas fa-user-check h-4 w-4 inline mr-1"></i>
+                                Following
+                            </button>
+                        </form>
                     @else
-                        <form action="{{ route('follow.send', $user->id) }}" method="POST">
+                        <form action="{{ route('follow', $user->id) }}" method="POST" class="follow-form">
                             @csrf
                             <button type="submit" class="w-full bg-brand-500 hover:bg-brand-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition">
                                 <i class="fas fa-user-plus h-4 w-4 inline mr-1"></i>
-                                Connect
+                                Follow
                             </button>
                         </form>
                     @endif
