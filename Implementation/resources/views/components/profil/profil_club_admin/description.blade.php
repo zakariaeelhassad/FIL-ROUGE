@@ -1,10 +1,12 @@
 <div class="bg-white rounded-xl p-5">
     <div class="flex justify-between items-center mb-4">
         <h2 class="text-lg font-semibold text-gray-900">Description</h2>
-        <button onclick="openModal('descriptionModal')" class="text-brand-500 hover:text-brand-600 text-sm font-medium flex items-center transition">
-            <i class="fas fa-edit h-4 w-4 mr-1"></i>
-            Edit
-        </button>
+        @if(auth()->check() && auth()->id() === $user->id)
+            <button onclick="openModal('descriptionModal')" class="text-brand-500 hover:text-brand-600 text-sm font-medium flex items-center transition">
+                <i class="fas fa-edit h-4 w-4 mr-1"></i>
+                Edit
+            </button>
+        @endif
     </div>
     <div id="description-text" class="text-gray-700 leading-relaxed">
         {{ $profile->description === '' ? 'No description yet. Click the edit button to add information about yourself or your club.' : $profile->description }}
