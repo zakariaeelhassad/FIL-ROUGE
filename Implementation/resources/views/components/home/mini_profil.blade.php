@@ -33,47 +33,15 @@
         <!-- Stats -->
         <div class="flex justify-center items-center mb-5">
             <div class="flex flex-col items-center">
-                <span class="text-2xl font-bold text-gray-800">10K</span>
+                <span class="text-2xl font-bold text-gray-800">{{ $user->followers->count() }}</span>
                 <span class="text-gray-400 text-sm">followers</span>
             </div>
         </div>
         
-        <!-- Profile Button -->
         <a href="/profil/joueur" class="block">
             <button class="bg-brand-50 border border-brand-200 text-brand-600 rounded-full px-8 py-2.5 w-full font-medium hover:bg-brand-100 transition">
                 VOIR LE PROFIL
             </button>
         </a>
-    </div>
-    
-    <!-- Quick Links -->
-    <div class="border-t border-gray-100 px-6 py-4">
-        <h3 class="font-medium text-gray-700 mb-3">Quick Links</h3>
-        <ul class="space-y-2">
-            <li>
-                <a href="#" class="flex items-center text-gray-600 hover:text-brand-600 py-1.5 transition">
-                    <i class="fas fa-users h-5 w-5 mr-3 text-gray-400"></i>
-                    Friends
-                </a>
-            </li>
-            <li>
-                <a href="#" class="flex items-center text-gray-600 hover:text-brand-600 py-1.5 transition">
-                    <i class="fas fa-bookmark h-5 w-5 mr-3 text-gray-400"></i>
-                    Saved Posts
-                </a>
-            </li>
-            <li>
-                <a href="#" class="flex items-center text-gray-600 hover:text-brand-600 py-1.5 transition">
-                    <i class="fas fa-calendar h-5 w-5 mr-3 text-gray-400"></i>
-                    Events
-                </a>
-            </li>
-            <li>
-                <a href="#" class="flex items-center text-gray-600 hover:text-brand-600 py-1.5 transition">
-                    <i class="fas fa-cog h-5 w-5 mr-3 text-gray-400"></i>
-                    Settings
-                </a>
-            </li>
-        </ul>
     </div>
 </div>
