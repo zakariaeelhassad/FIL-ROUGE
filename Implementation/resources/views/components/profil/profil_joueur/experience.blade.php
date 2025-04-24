@@ -1,10 +1,12 @@
 <div class="bg-white rounded-xl">
     <div class="flex justify-between items-center mb-6">
         <h2 class="text-lg font-semibold text-gray-900">Expérience</h2>
-        <button onclick="openModal('experienceModal')" class="px-4 py-2 bg-brand-500 hover:bg-brand-600 text-white text-sm font-medium rounded-full transition shadow-sm flex items-center">
-            <i class="fas fa-plus h-4 w-4 mr-1"></i>
-            Add Experience
-        </button>
+        @if(auth()->check() && auth()->id() === $user->id)
+            <button onclick="openModal('experienceModal')" class="px-4 py-2 bg-brand-500 hover:bg-brand-600 text-white text-sm font-medium rounded-full transition shadow-sm flex items-center">
+                <i class="fas fa-plus h-4 w-4 mr-1"></i>
+                Add Experience
+            </button>
+        @endif
     </div>
 
     @if($experiences->count() > 0)
@@ -46,9 +48,6 @@
             @endforeach
         </div>
         
-        <button class="w-full py-3 mt-6 text-center text-gray-700 hover:bg-gray-100 rounded-xl transition font-medium">
-            View All Experiences
-        </button>
     @else
         <div class="text-center py-10 bg-gray-50 rounded-xl">
             <i class="fas fa-briefcase h-12 w-12 text-gray-400"></i>
