@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Follow;
 use App\Models\Post;
-use App\Services\PostService;
+use App\Models\Reaction;
 use Illuminate\Http\Request;
+use App\Services\PostService;
 
 class PostsController extends Controller
 {
@@ -16,36 +18,22 @@ class PostsController extends Controller
         $this->postService = $postService;
     }
 
-    public function profil(){
-        $user = auth()->user();
-        
-        if (!auth()->check()) {
-            return redirect()->route('login')->with('error', 'Veuillez vous connecter pour accéder à ce profil.');
-        }
-    
-        if ($user->role == 'joueur') {
-            $experiences = $user->experiences()->with('user')->latest()->get();  
-            $profile = \App\Models\JoueurProfile::where('user_id', $user->id)->first();
-            $posts = $user->posts()->with('user', 'images')->latest()->get();
-    
-            return view('pages.profil_joueur', compact('user', 'posts', 'profile' , 'experiences'));
-        }
-    
-        if ($user->role == 'club_admin') {
-            $profile = \App\Models\ClubAdminProfile::where('user_id', $user->id)->first();
-            $titres = \App\Models\Titre::where('user_id', $user->id)->latest()->get();
-            $posts = $user->posts()->with('user', 'images')->latest()->get();
-    
-            return view('pages.profil_club_manager', compact('user', 'posts', 'profile', 'titres'));
-        }
-    
-        return redirect()->route('home')->with('error', 'Role not found');
-    }
-    
-
     public function index()
     {
-        $posts = $this->postService->all();
+        $userId = auth()->id();
+        
+        $followingIds = Follow::where('follower_id', $userId)
+            ->pluck('following_id')
+            ->toArray();
+        
+        $followingIds[] = $userId;
+        
+        $posts = Post::whereIn('user_id', $followingIds)
+                    ->with(['user', 'media', 'comments', 'reactions' => function($query) use ($userId) {
+                        $query->where('user_id', $userId);
+                    }])
+                    ->latest()
+                    ->get();
 
         return view('pages.home', compact('posts'));
     }
@@ -54,20 +42,31 @@ class PostsController extends Controller
     {
         $data = $request->validate([
             'content' => ['required', 'string'],
-            'image' => ['nullable', 'image', 'max:2048'], 
-        ]); 
+            'media.*' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp,mp4,mov,avi', 'max:51200'],
+        ]);
 
         $post = new Post();
         $post->user_id = auth()->id();
         $post->content = $data['content'];
         $post->save();
 
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('posts', 'public');
-           
-            $post->images()->create([
-                'path' => $imagePath
-            ]);
+        if ($request->hasFile('media')) {
+            foreach ($request->file('media') as $file) {
+                if ($file->getSize() > 200 * 1024 * 1024) {
+                    return back()
+                        ->withErrors(['media' => 'الملف كبير بزاف. الحد الأقصى هو 200MB.'])
+                        ->withInput(); 
+                }
+
+                $path = $file->store('posts', 'public');
+                $mimeType = $file->getMimeType();
+                $type = str_contains($mimeType, 'video') ? 'video' : 'image';
+
+                $post->media()->create([
+                    'path' => $path,
+                    'type' => $type
+                ]);
+            }
         }
 
         return redirect()->route('posts.index')->with('success', 'Post créé avec succès');
@@ -90,16 +89,35 @@ class PostsController extends Controller
     {
         $data = $request->validate([
             'content' => ['required', 'string'],
-            'image' => ['required', 'string']
+            'media.*' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp,mp4,mov,avi', 'max:51200'],
+            'keep_media' => ['nullable', 'array'],
+            'remove_media' => ['nullable', 'boolean'],
         ]);
 
-        $result = $this->postService->update($data, $id);
-
-        if ($result <= 0) {
-            return redirect()->back()->with('error', 'Échec de la mise à jour du post');
+        $post = Post::findOrFail($id);
+        
+        if ($post->user_id !== auth()->id()) {
+            return redirect()->back()->with('error', 'Action non autorisée');
         }
 
-        return redirect()->route('posts.index')->with('success', 'Post mis à jour avec succès');
+        $post->content = $data['content'];
+        $post->save();
+
+        if ($request->has('remove_media')) {
+            $post->media()->delete();
+        } elseif ($request->has('keep_media')) {
+            $post->media()->whereNotIn('id', $request->keep_media ?? [])->delete();
+        }
+
+        if ($request->hasFile('media')) {
+            foreach ($request->file('media') as $file) {
+                $path = $file->store('posts', 'public');
+                $type = str_contains($file->getMimeType(), 'video') ? 'video' : 'image';
+                $post->media()->create(['path' => $path, 'type' => $type]);
+            }
+        }
+
+        return redirect()->back()->with('success', 'Post mis à jour avec succès');
     }
 
     public function destroy(int $id)
