@@ -1,10 +1,12 @@
 <div class="bg-white rounded-xl p-5">
     <div class="flex justify-between items-center mb-5">
         <h2 class="text-lg font-semibold text-gray-900">Titres & Achievements</h2>
-        <button onclick="openModal('titreModal')" class="px-4 py-2 bg-brand-500 hover:bg-brand-600 text-white text-sm font-medium rounded-full transition shadow-sm flex items-center">
-            <i class="fas fa-plus h-4 w-4 mr-1"></i>
-            Add Title
-        </button>
+        @if(auth()->check() && auth()->id() === $user->id)
+            <button onclick="openModal('titreModal')" class="px-4 py-2 bg-brand-500 hover:bg-brand-600 text-white text-sm font-medium rounded-full transition shadow-sm flex items-center">
+                <i class="fas fa-plus h-4 w-4 mr-1"></i>
+                Add Title
+            </button>
+        @endif
     </div>
 
     @if($titres->count() > 0)
