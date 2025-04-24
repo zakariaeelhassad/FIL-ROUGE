@@ -27,7 +27,7 @@ class ChatController extends Controller
             ->with(['userOne', 'userTwo', 'latestMessage'])
             ->get();
         
-        return view('components.chat.index', compact('chats'));
+        return view('pages.chat.index', compact('chats'));
     }
 
     public function show(Chat $chat)
@@ -48,7 +48,7 @@ class ChatController extends Controller
             ->where('read', false)
             ->update(['read' => true]);
         
-        return view('components.chat.show', compact('chat', 'messages', 'otherUser'));
+        return view('pages.chat.show', compact('chat', 'messages', 'otherUser'));
     }
 
     public function store(Request $request, Chat $chat)
@@ -99,7 +99,7 @@ class ChatController extends Controller
         
         $users = User::whereIn('id', $followingIds)->get();
         
-        return view('components.chat.create', compact('users'));
+        return view('pages.chat.create', compact('users'));
     }
 
     public function storeChat(Request $request)
