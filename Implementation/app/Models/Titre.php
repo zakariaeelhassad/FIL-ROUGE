@@ -9,7 +9,6 @@ class Titre extends Model
 {
     use HasFactory;
 
-    // Champs autorisés pour l'insertion en masse (mass assignment)
     protected $fillable = [
         'user_id',
         'nom_titre',
