@@ -87,41 +87,27 @@ class User extends Authenticatable
 
     public function followers()
     {
-        return $this->hasMany(Follow::class, 'following_id')->where('status', 'accepted');
+        return $this->hasMany(Follow::class, 'following_id');
     }
 
     public function following()
     {
+        return $this->hasMany(Follow::class, 'follower_id');
+    }
+
+    public function acceptedFollowers()
+    {
+        return $this->hasMany(Follow::class, 'following_id')->where('status', 'accepted');
+    }
+
+    public function acceptedFollowing()
+    {
         return $this->hasMany(Follow::class, 'follower_id')->where('status', 'accepted');
     }
 
-    public function pendingFollowers()
+    public function pendingFollowRequests()
     {
         return $this->hasMany(Follow::class, 'following_id')->where('status', 'pending');
-    }
-
-    public function friends()
-    {
-        return $this->hasMany(Follow::class, 'follower_id')
-            ->where('status', 'accepted')
-            ->with('following')
-            ->union(
-                $this->hasMany(Follow::class, 'following_id')
-                    ->where('status', 'accepted')
-                    ->with('follower')
-            );
-    }
-    public function friend()
-    {
-        $friends1 = $this->hasMany(Follow::class, 'follower_id')
-            ->where('status', 'accepted')
-            ->pluck('following_id');
-
-        $friends2 = $this->hasMany(Follow::class, 'following_id')
-            ->where('status', 'accepted')
-            ->pluck('follower_id');
-
-        return $friends1->merge($friends2);
     }
 
     public function isFollowing($userId)
@@ -130,6 +116,29 @@ class User extends Authenticatable
                     ->where('following_id', $userId)
                     ->where('status', 'accepted')
                     ->exists();
+    }
+
+    public function hasPendingFollowRequest($userId)
+    {
+        return Follow::where('follower_id', $this->id)
+                    ->where('following_id', $userId)
+                    ->where('status', 'pending')
+                    ->exists();
+    }
+
+    public function getFollowersCountAttribute()
+    {
+        return $this->followers()->where('status', 'accepted')->count();
+    }
+
+    public function getFollowingCountAttribute()
+    {
+        return $this->following()->where('status', 'accepted')->count();
+    }
+
+    public function getPendingFollowRequestsCountAttribute()
+    {
+        return $this->followers()->where('status', 'pending')->count();
     }
 
     public function chatsAsUserOne()
@@ -152,10 +161,25 @@ class User extends Authenticatable
         return $this->hasMany(Message::class, 'receiver_id');
     }
 
-    // Get all chats for this user
     public function chats()
     {
         return Chat::where('user_one_id', $this->id)
             ->orWhere('user_two_id', $this->id);
+    }
+
+    public function friendsPosts()
+    {
+        $followingIds = $this->acceptedFollowing()->pluck('following_id');
+        
+        return Post::whereIn('user_id', $followingIds)
+                    ->orWhere('user_id', $this->id)
+                    ->with(['user', 'media', 'comments', 'reactions'])
+                    ->latest()
+                    ->get();
+    }
+    
+    public function socialMedia()
+    {
+        return $this->hasOne(UserSocialMedia::class);
     }
 }
