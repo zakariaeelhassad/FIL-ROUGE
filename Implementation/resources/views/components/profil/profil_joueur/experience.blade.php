@@ -33,9 +33,20 @@
                                         {{ $experience->place }}
                                     </p>
                                 </div>
-                                <span class="bg-brand-50 text-brand-600 text-xs font-medium px-2.5 py-1 rounded-full capitalize">
-                                    {{ $experience->categoryType }}
-                                </span>
+                                <div class="flex flex-col items-end">
+                                    <span class="bg-brand-50 text-brand-600 text-xs font-medium px-2.5 py-1 rounded-full capitalize">
+                                        {{ $experience->categoryType }}
+                                    </span>
+                        
+                                    @if(auth()->check() && auth()->id() === $user->id)
+                                        <form action="{{ route('experiences.delete', $experience->id) }}" method="POST" class="mt-2">
+                                            @csrf
+                                            <button type="submit" class="text-red-500 hover:text-red-700 text-sm">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </form>
+                                    @endif
+                                </div>
                             </div>
                             
                             <div class="flex items-center mt-3 text-sm text-gray-500">
