@@ -93,7 +93,7 @@
 
                     <div class="flex items-center justify-between pt-4 border-t border-gray-300">
                         <span class="text-sm text-gray-600">Pas encore de compte?</span>
-                        <a href="#" class="text-sm font-medium text-blue-600 hover:text-blue-900">S'inscrire</a>
+                        <a href="signup" class="text-sm font-medium text-blue-600 hover:text-blue-900">S'inscrire</a>
                     </div>
                 </div>
             </form>
@@ -115,6 +115,6 @@
         </div>
     </div>
 
-    {{-- <script src="../../../js/app.js"></script> --}}
+     <script src="../../../js/app.js"></script> 
 </body>
 </html>

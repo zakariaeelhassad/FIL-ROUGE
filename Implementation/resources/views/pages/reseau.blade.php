@@ -1,109 +1,140 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Network</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
-                    colors: {
-                        brand: {
-                            50: '#e6f0ff',
-                            100: '#cce0ff',
-                            200: '#99c2ff',
-                            300: '#66a3ff',
-                            400: '#3385ff',
-                            500: '#0066ff',
-                            600: '#0052cc',
-                            700: '#003d99',
-                            800: '#002966',
-                            900: '#001433',
-                            950: '#0a1445',
-                        }
-                    },
-                    boxShadow: {
-                        'soft': '0 4px 15px rgba(0, 0, 0, 0.05)',
-                        'hover': '0 10px 25px rgba(0, 102, 255, 0.15)',
-                    },
-                }
-            }
-        }
-    </script>
-    <style>
-        .animate-fade-in {
-            animation: fadeIn 0.3s ease-in-out;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        .hover-lift {
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        
-        .hover-lift:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0, 102, 255, 0.1);
-        }
-    </style>
-</head>
-<body class="bg-gray-50 font-sans text-gray-800">
-    @include('components.navbar')
+@extends('layouts.app', ['title' => 'reseau'])
+
+@section('content')
     
     <div class="max-w-7xl mx-auto px-4 py-8">
         <div class="mb-8">
             <h1 class="text-2xl font-bold text-gray-900 mb-2">Your Network</h1>
-            <p class="text-gray-600">Manage your connections and discover new people</p>
+            <p class="text-gray-600">Discover new people and grow your connections</p>
         </div>
         
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- Left Column -->
             <div class="lg:col-span-1">
-                @include("components.reseau.follow")
-                
-                <div class="bg-white rounded-2xl shadow-soft border border-gray-100 p-5 mt-6">
-                    <h2 class="text-lg font-semibold text-gray-900 mb-4">Network Stats</h2>
+                <div class="bg-white rounded-2xl shadow-soft border border-gray-100 p-5 mb-6">
+                    <h2 class="text-lg font-semibold text-gray-900 mb-4">Your Stats</h2>
                     
                     <div class="space-y-4">
-                        <div class="flex items-center justify-between">
-                            <span class="text-gray-600">Connections</span>
-                            <span class="font-medium text-gray-900">128</span>
+                        <div class="flex items-center justify-between hover:bg-gray-50 p-2 rounded-lg transition">
+                            <a href="{{ route('followers') }}" class="w-full flex items-center justify-between">
+                                <span class="text-gray-600">Followers</span>
+                                <div class="flex items-center">
+                                    <span class="font-medium text-gray-900 mr-2">{{ auth()->user()->followers_count }}</span>
+                                    <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+                                </div>
+                            </a>
                         </div>
                         
-                        <div class="flex items-center justify-between">
-                            <span class="text-gray-600">Pending Requests</span>
-                            <span class="font-medium text-gray-900">{{ $followRequests->count() }}</span>
+                        <div class="flex items-center justify-between hover:bg-gray-50 p-2 rounded-lg transition">
+                            <a href="{{ route('following') }}" class="w-full flex items-center justify-between">
+                                <span class="text-gray-600">Following</span>
+                                <div class="flex items-center">
+                                    <span class="font-medium text-gray-900 mr-2">{{ auth()->user()->following_count }}</span>
+                                    <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+                                </div>
+                            </a>
                         </div>
                         
-                        <div class="flex items-center justify-between">
-                            <span class="text-gray-600">Profile Views</span>
-                            <span class="font-medium text-gray-900">342</span>
-                        </div>
-                        
-                        <div class="h-1 bg-gray-100 rounded-full overflow-hidden">
-                            <div class="h-full bg-gradient-to-r from-brand-400 to-brand-600 rounded-full" style="width: 75%"></div>
-                        </div>
-                        <div class="text-xs text-gray-500 text-center">Network growth: 75% of your goal</div>
+                        @if(auth()->user()->pending_follow_requests_count > 0)
+                            <div class="flex items-center justify-between bg-gray-50 p-2 rounded-lg transition">
+                                <a href="{{ route('followers') }}" class="w-full flex items-center justify-between">
+                                    <span class="text-brand-600">Follow Requests</span>
+                                    <div class="flex items-center">
+                                        <span class="font-medium text-brand-600 mr-2">{{ auth()->user()->pending_follow_requests_count }}</span>
+                                        <i class="fas fa-chevron-right text-brand-600 text-xs"></i>
+                                    </div>
+                                </a>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-2xl shadow-soft border border-gray-100 p-5">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-lg font-semibold text-gray-900">Based on your interests</h2>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        @foreach($suggestedUsers->take(3) as $user)
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <div class="w-10 h-10 rounded-full overflow-hidden bg-gray-100">
+                                        <a href="{{ route('profil.show', ['id' => $user->id]) }}">
+                                            <img 
+                                                src="{{ asset('storage/' . ($user->profile_image ??  '../../../images/la-personne.png') ) }}" 
+                                                alt="Profile photo" 
+                                                class="w-full h-full object-cover" 
+                                            />
+                                        </a>
+                                    </div>
+                                    <div class="ml-3">
+                                        <a href="{{ route('profil.show', ['id' => $user->id]) }}" class="font-medium text-gray-900 hover:text-brand-600 transition text-sm">{{ $user->full_name }}</a>
+                                        <p class="text-gray-500 text-xs">{{ $user->role }}</p>
+                                    </div>
+                                </div>
+                                
+                                @if(auth()->user()->isFollowing($user->id))
+                                    <form action="{{ route('unfollow', $user->id) }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="text-gray-500 hover:text-red-500 text-sm font-medium transition">
+                                            Unfollow
+                                        </button>
+                                    </form>
+                                @elseif(auth()->user()->hasPendingFollowRequest($user->id))
+                                    <button class="text-gray-400 text-sm font-medium cursor-default">
+                                        Requested
+                                    </button>
+                                @else
+                                    <form action="{{ route('follow', $user->id) }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="text-brand-500 hover:text-brand-600 text-sm font-medium transition">
+                                            Follow
+                                        </button>
+                                    </form>
+                                @endif
+                            </div>
+                        @endforeach
                     </div>
                 </div>
             </div>
             
-            <!-- Right Column -->
             <div class="lg:col-span-2">
                 @include("components.reseau.follower")
             </div>
         </div>
     </div>
-</body>
-</html>
+    
+    @if(session('success') || session('error'))
+        <div id="notification" class="fixed bottom-5 right-5 p-4 rounded-lg shadow-lg max-w-sm animate-fade-in {{ session('success') ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200' }}">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    @if(session('success'))
+                        <i class="fas fa-check-circle text-green-500 text-xl"></i>
+                    @else
+                        <i class="fas fa-exclamation-circle text-red-500 text-xl"></i>
+                    @endif
+                </div>
+                <div class="ml-3">
+                    <p class="text-sm font-medium {{ session('success') ? 'text-green-800' : 'text-red-800' }}">
+                        {{ session('success') ?? session('error') }}
+                    </p>
+                </div>
+                <div class="ml-auto pl-3">
+                    <button onclick="document.getElementById('notification').remove()" class="inline-flex text-gray-400 hover:text-gray-500">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <script>
+            setTimeout(() => {
+                const notification = document.getElementById('notification');
+                if (notification) {
+                    notification.style.opacity = '0';
+                    notification.style.transition = 'opacity 0.5s ease-out';
+                    setTimeout(() => notification.remove(), 500);
+                }
+            }, 5000);
+        </script>
+    @endif
+@endsection

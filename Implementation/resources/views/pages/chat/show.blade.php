@@ -89,7 +89,7 @@
             <div class="instagram-gradient-border mr-3">
                 <div class="h-9 w-9 bg-white rounded-full flex items-center justify-center overflow-hidden">
                     <a href="{{ route('profil.show', ['id' => $otherUser->id]) }}">
-                        <img src="{{ asset('storage/' . $otherUser->profile_image) ?? 'https://placehold.co/100x100/3b82f6/ffffff.png?text='.substr($request->follower->full_name, 0, 2)}}" alt="{{ $otherUser->name }}" class="h-full w-full object-cover">
+                        <img src="{{ asset('storage/' . ($otherUser->profile_image  ??  '../../../images/la-personne.png') ) }}" class="h-full w-full object-cover">
                     </a>
                 </div>
             </div>

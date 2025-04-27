@@ -30,15 +30,15 @@
             <h2 class="text-xl font-bold text-center text-gray-800 mb-8">Inscription</h2>
           
             @if ($errors->any())
-<div id="serverError" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-    <strong class="font-bold">Oops! Quelques problèmes sont survenus :</strong>
-    <ul class="list-disc list-inside">
-        @foreach ($errors->all() as $error)
-            <li>{{ $error }}</li>
-        @endforeach
-    </ul>
-</div>
-@endif
+            <div id="serverError" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                <strong class="font-bold">Oops! Quelques problèmes sont survenus :</strong>
+                <ul class="list-disc list-inside">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+            @endif
             @if ($errors->any())
             <div id="serverError" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
                 Une erreur est survenue

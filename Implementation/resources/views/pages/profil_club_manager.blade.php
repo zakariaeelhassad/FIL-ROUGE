@@ -1,79 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Profile</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
-                    colors: {
-                        brand: {
-                            50: '#e6f0ff',
-                            100: '#cce0ff',
-                            200: '#99c2ff',
-                            300: '#66a3ff',
-                            400: '#3385ff',
-                            500: '#0066ff',
-                            600: '#0052cc',
-                            700: '#003d99',
-                            800: '#002966',
-                            900: '#001433',
-                            950: '#0a1445',
-                        }
-                    },
-                    boxShadow: {
-                        'soft': '0 4px 15px rgba(0, 0, 0, 0.05)',
-                        'hover': '0 10px 25px rgba(0, 102, 255, 0.15)',
-                    },
-                }
-            }
-        }
-    </script>
-    <style>
-        .animate-fade-in {
-            animation: fadeIn 0.3s ease-in-out;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        .hover-lift {
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        
-        .hover-lift:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0, 102, 255, 0.1);
-        }
-        
-        .nav-active {
-            position: relative;
-        }
-        
-        .nav-active::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background-color: #0066ff;
-        }
-    </style>
-</head>
-<body class="bg-gray-50 font-sans text-gray-800">
-    @include('components.navbar')
+@extends('layouts.app', ['title' => 'profil'])
+
+@section('content')
     
     <div class="max-w-4xl mx-auto px-4 py-8">
         @include("components.profil.carte_profil_prancipal")
@@ -89,7 +16,7 @@
         
         <div class="mt-8 bg-white rounded-2xl shadow-soft">
             <div class="border-b border-gray-100">
-                <nav class="flex overflow-x-auto scrollbar-hide">
+                <nav class="flex">
                     <button data-target="description" class="nav-button px-6 py-4 text-gray-700 transition-colors duration-300 hover:text-brand-500 focus:outline-none whitespace-nowrap">
                         Description
                     </button>
@@ -133,7 +60,10 @@
             </div>
         </div>
     </div>
+@endsection
 
+
+@push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const navButtons = document.querySelectorAll('.nav-button');
@@ -179,5 +109,5 @@
             document.getElementById(model).classList.add('hidden');
         }
     </script>
-</body>
-</html>
+    @endpush
+

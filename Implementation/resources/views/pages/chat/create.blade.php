@@ -47,7 +47,7 @@
                                     <div class="flex items-center">
                                         <div class="w-12 h-12 rounded-full bg-brand-100 flex-shrink-0 overflow-hidden border border-brand-200">
                                             <img 
-                                                src="{{ asset('storage/' . $user->profile_image) ?? 'https://placehold.co/100x100/3b82f6/ffffff.png?text='.substr($request->follower->full_name, 0, 2)}}" 
+                                                src="{{ asset('storage/' . ($user->profile_image  ??  '../../../images/la-personne.png') ) }}" 
                                                 alt="Profile photo" 
                                                 class="w-full h-full object-cover" 
                                             />
