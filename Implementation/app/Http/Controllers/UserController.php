@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Follow;
+
 use App\Models\User;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
+
 
 class UserController extends Controller
 {
@@ -17,19 +16,6 @@ class UserController extends Controller
     public function __construct(UserService $userService)
     {
         $this->userService = $userService;
-    }
-
-    public function reseau()
-    {
-        if (!auth()->check()) {
-            return redirect()->route('login')->withErrors(['error' => 'Veuillez vous connecter.']);
-        }
-
-        $users = User::where('id', '!=', auth()->id())->get();
-
-        $followRequests = Follow::where('following_id', auth()->id())->get();
-
-        return view('pages.reseau', compact('users', 'followRequests'));
     }
 
     public function index()
@@ -54,6 +40,7 @@ class UserController extends Controller
         ]);
 
         try {
+            
             $user = $this->userService->create($data);
 
             if ($user->role === 'club_admin') {
@@ -121,7 +108,6 @@ class UserController extends Controller
             $data['banner_image'] = $bannerImagePath;
         }
 
-        // Update user data
         $result = $this->userService->update($data, $id);
 
         if ($result <= 0) {
