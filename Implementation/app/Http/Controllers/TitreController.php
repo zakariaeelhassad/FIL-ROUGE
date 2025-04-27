@@ -94,6 +94,6 @@ class TitreController extends Controller
     public function destroy(int $id)
     {
         $this->titreService->delete($id);
-        return redirect()->route('titres.index')->with('success', 'Titre supprimé avec succès.');
+        return redirect()->route('profil.joueur')->with('success', 'Titre supprimé avec succès.');
     }
 }
