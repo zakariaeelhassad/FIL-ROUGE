@@ -30,6 +30,14 @@
 
                     <div class="text-3xl font-bold text-brand-500 ml-4">{{ $titre->nombre }}</div>
                 </div>
+                @if(auth()->check() && auth()->id() === $user->id)
+                <form action="{{ route('titres.delete', $titre->id) }}" method="POST">
+                    @csrf
+                    <button type="submit" class="ml-4 text-red-500 hover:text-red-700">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </form>            
+                @endif
             @endforeach
         </div>
         
