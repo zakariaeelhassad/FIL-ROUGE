@@ -99,6 +99,6 @@ class ExperienceController extends Controller
     {
         $this->experienceService->delete($id);
 
-        return redirect()->route('experiences.index')->with('success', 'Expérience supprimée avec succès.');
+        return redirect()->route('profil.joueur')->with('success', 'Expérience supprimée avec succès.');
     }
 }
