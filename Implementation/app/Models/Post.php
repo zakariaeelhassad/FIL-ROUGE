@@ -33,5 +33,9 @@ class Post extends Model
         return $this->hasMany(PostMedia::class);
     }
 
+    public function reports()
+    {
+        return $this->morphMany(Report::class, 'reported');
+    }
 
 }
