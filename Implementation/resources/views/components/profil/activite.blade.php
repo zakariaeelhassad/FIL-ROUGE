@@ -29,7 +29,24 @@
                                         <h3 class="text-brand-600 font-bold text-lg">{{ $post->user ? $post->user->full_name : 'Unknown User' }}</h3>
                                         <p class="text-gray-500 text-sm">{{ $post->user ? $post->user->bio : 'No Bio Available' }}</p>
                                     </div>
-                                    @if(auth()->check() && auth()->id() === $user->id)
+                                    @if(auth()->check() && auth()->id() !== $post->user_id)
+                                    <div class="text-gray-400 relative group">
+                                        <button class="hover:text-brand-500 p-1 rounded-full hover:bg-gray-50"
+                                                onclick="toggleDropdown({{ $post->id }})">
+                                            <i class="fas fa-ellipsis-v"></i>
+                                        </button>
+                    
+                                        <div id="dropdown-{{ $post->id }}" class="absolute right-0 mt-2 w-40 bg-white border border-gray-100 rounded-xl shadow-md z-20 hidden">
+                                            <button
+                                                class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                                onclick="openReportModal({{ $post->id }}, 'post')"
+                                            >
+                                                Signaler ce post
+                                            </button>
+                                        </div>
+                                    </div>
+                                    @endif 
+                                    @if(auth()->check() && auth()->id() !== $post->user_id)
                                         <div class="relative inline-block text-left">
                                             <button onclick="toggleDropdown(this)" class="hover:text-brand-500 p-1 rounded-full hover:bg-gray-50 focus:outline-none">
                                                 <i class="fas fa-ellipsis-v"></i>
@@ -331,19 +348,23 @@
 
 <script src="{{ asset('js/home.js') }}"></script>
 <script>
-    function toggleDropdown(button) {
-        const menu = button.parentElement.querySelector('.dropdown-menu');
-        menu.classList.toggle('hidden');
+
+    function toggleDropdown(commentId) {
+        const dropdown = document.getElementById('dropdown-' + commentId);
+        dropdown.classList.toggle('hidden');
     }
 
-    document.addEventListener('click', function (e) {
-        const dropdowns = document.querySelectorAll('.dropdown-menu');
-        dropdowns.forEach(menu => {
-            if (!menu.parentElement.contains(e.target)) {
-                menu.classList.add('hidden');
-            }
-        });
-    });
+    function openReportModal(id, type) {
+        document.getElementById('reported_id').value = id;
+        document.getElementById('reported_type').value = type;
+        document.getElementById('report-modal').classList.remove('hidden');
+        document.getElementById('report-modal').classList.add('flex');
+    }
+
+    function closeReportModal() {
+        document.getElementById('report-modal').classList.remove('flex');
+        document.getElementById('report-modal').classList.add('hidden');
+    }
 
     function openEditModal(postId, content, media = []) {
     const modal = document.getElementById('editPostModal');
