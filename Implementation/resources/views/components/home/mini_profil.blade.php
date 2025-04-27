@@ -3,22 +3,18 @@
 @endphp
 
 <div class="rounded-2xl overflow-hidden bg-white shadow-soft border border-gray-100">
-    <!-- Banner Section -->
     <div class="h-28 relative overflow-hidden">
-        <img src="{{ $user->banner_image ? asset('storage/' . $user->banner_image) : 'https://via.placeholder.com/400x100' }}"
+        <img src="{{ $user->banner_image ? asset('storage/' . $user->banner_image) : '../../../images/téléchargement.jpg' }}"
              alt="Banner Image"
              class="w-full h-full object-cover" />
              
-        <!-- Gradient Overlay -->
         <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
     </div>    
     
-    <!-- Profile Content -->
     <div class="px-6 pt-14 pb-6 text-center relative">
-        <!-- Profile Image -->
         <div class="absolute -top-10 left-1/2 transform -translate-x-1/2">
             <div class="w-20 h-20 rounded-full overflow-hidden border-4 border-white shadow-sm bg-white">
-                <img src="{{ $user->profile_image ? asset('storage/' . $user->profile_image) : 'https://via.placeholder.com/200' }}" 
+                <img src="{{ $user->profile_image ? asset('storage/' . $user->profile_image) : '../../../images/la-personne.png' }}" 
                      alt="Profile Picture" 
                      class="w-full h-full object-cover" />
             </div>
