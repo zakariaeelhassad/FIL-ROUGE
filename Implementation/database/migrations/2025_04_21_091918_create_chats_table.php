@@ -14,7 +14,6 @@ return new class extends Migration
             $table->foreignId('user_two_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
 
-            // Prevent duplicate chat between same two users
             $table->unique(['user_one_id', 'user_two_id']);
         });
     }
