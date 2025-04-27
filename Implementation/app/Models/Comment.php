@@ -26,4 +26,9 @@ class Comment extends Model
         return $this->hasMany(CommentReply::class);
     }
 
+    public function reports()
+    {
+        return $this->morphMany(Report::class, 'reported');
+    }
+
 }
