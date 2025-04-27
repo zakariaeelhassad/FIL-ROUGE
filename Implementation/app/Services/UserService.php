@@ -15,10 +15,6 @@ class UserService
 
     public function create(array $data)
     {
-
-        $data['full_name'] = $data['full_name'] ?? 'Nom non fourni';
-        $data['role'] = $data['role'] ?? 'joueur';
-        $data['password'] = Hash::make($data['password']);
         return $this->repository->create($data);
     }
 
