@@ -9,44 +9,32 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
-class AuthController extends Controller
+class SessionController extends Controller
 {
-     /**
-     * Affiche le formulaire de connexion
-     */
+
     public function showLoginForm()
-    {
-        // Si l'utilisateur est déjà connecté, redirigez-le
-        if (Auth::check()) {
-            return redirect()->route('reseau'); // Remplacez par votre route de tableau de bord
-        }
-        
-        return view('page.login');
+    {   
+        return view('pages.login');
     }
 
-    /**
-     * Gère la connexion de l'utilisateur
-     */
-    public function login(Request $request)
-    {
-        $attributes = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required']
-        ]);
-
-        var_dump($attributes, User::where('email', $attributes['email'])->first());
-        dd(Auth::attempt($attributes));
-
-        if (Auth::attempt($attributes)) {
-            $request->session()->regenerate();
-
-            return redirect('reseau')->with('success', 'Connexion réussie !');
-        }
-
-        return back()->withErrors([
-            'email' => 'Les identifiants sont incorrects.',
-        ])->withInput($request->only('email'));
-    }
+   public function login(Request $request)
+   {
+       $credentials = $request->only(['email', 'password']);
+       
+       $user = User::where('email', $credentials['email'])->first();
+   
+       if ($user && Hash::check($credentials['password'], $user->password)) {
+           Auth::login($user);
+           return redirect('/')->with('success', 'Welcome! Login successful.');
+       }
+   
+       return back()->withErrors([
+           'email' => 'Email or password incorrect.',
+       ])->withInput();
+   }
+   
+    
+    
 
 
     /**
@@ -54,20 +42,16 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
-        // Log de la déconnexion
         Log::info('Déconnexion', [
             'user_id' => Auth::id(),
             'ip' => $request->ip()
         ]);
 
-        // Déconnexion
         Auth::logout();
 
-        // Invalidation de la session
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        // Redirection vers la page de connexion
         return redirect()->route('login')
             ->with('success', 'Vous avez été déconnecté avec succès');
     }
@@ -79,7 +63,7 @@ class AuthController extends Controller
     {
         return $this->limiter()->tooManyAttempts(
             $this->throttleKey($request), 
-            5 // Nombre maximal de tentatives
+            5 
         );
     }
 
