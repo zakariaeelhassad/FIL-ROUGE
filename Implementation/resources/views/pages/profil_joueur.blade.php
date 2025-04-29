@@ -26,6 +26,9 @@
                     <button data-target="certification" class="nav-button px-6 py-4 text-gray-700 transition-colors duration-300 hover:text-brand-500 focus:outline-none whitespace-nowrap">
                         Certifications
                     </button>
+                    <button href="{{ route('invitations.player') }}" data-target="invitation" class="nav-button px-6 py-4 text-gray-700 transition-colors duration-300 hover:text-brand-500 focus:outline-none whitespace-nowrap">
+                        club
+                    </button>
                 </nav>
             </div>
             
@@ -38,6 +41,9 @@
                 </div>
                 <div id="certification" class="profile-section hidden">
                     @include("components.profil.profil_joueur.certification")
+                </div>
+                <div id="invitation" class="profile-section hidden">
+                    @include("components.profil.profil_joueur.invitations")
                 </div>
             </div>
         </div>
