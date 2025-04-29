@@ -1,6 +1,6 @@
 <div class="flex items-start space-x-2 mt-2">
     <img 
-        src="{{ asset('storage/' . $reply->user->profile_image ?? 'default-avatar.png') }}" 
+        src="{{ asset('storage/' . ($reply->user->profile_image ?? '../../../images/la-personne.png')) }}" 
         alt="Profile"
         class="w-6 h-6 rounded-full object-cover border border-brand-100"
     >
