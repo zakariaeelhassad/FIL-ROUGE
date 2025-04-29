@@ -35,6 +35,9 @@
                     <button data-target="titres" class="nav-button px-6 py-4 text-gray-700 transition-colors duration-300 hover:text-brand-500 focus:outline-none whitespace-nowrap">
                         Titres
                     </button>
+                    <button data-target="personnes" class="nav-button px-6 py-4 text-gray-700 transition-colors duration-300 hover:text-brand-500 focus:outline-none whitespace-nowrap">
+                        Personnes
+                    </button>
                 </nav>
             </div>
             
@@ -57,6 +60,9 @@
                 <div id="titres" class="profile-section hidden">
                     @include("components.profil.profil_club_admin.titre")
                 </div>
+                <div id="personnes" class="profile-section hidden">
+                    @include("components.profil.profil_club_admin.personne")
+                </div>
             </div>
         </div>
     </div>
@@ -69,7 +75,6 @@
             const navButtons = document.querySelectorAll('.nav-button');
             const profileSections = document.querySelectorAll('.profile-section');
 
-            // Set the first tab as active by default
             if (navButtons.length > 0) {
                 navButtons[0].classList.add('text-brand-500', 'font-bold', 'nav-active');
             }
@@ -92,7 +97,6 @@
                     const targetSection = document.getElementById(targetSectionId);
                     targetSection.classList.remove('hidden');
                     
-                    // Add a subtle animation
                     targetSection.classList.add('animate-fade-in');
                     setTimeout(() => {
                         targetSection.classList.remove('animate-fade-in');
