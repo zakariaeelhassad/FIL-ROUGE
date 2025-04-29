@@ -37,10 +37,7 @@
                             <i class="fas fa-ellipsis-v"></i>
                        </button>    
                         <div class="dropdown-menu absolute right-0 mt-2 w-28 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 hidden z-50">
-                            <div class="py-1 text-sm text-gray-700">
-                                <button type="button" onclick="openEditModal({{ $post->id }}, '{{ addslashes($post->content) }}')" class="block w-full text-left px-4 py-2 hover:bg-gray-100">
-                                    Edit
-                                </button>                                                 
+                            <div class="py-1 text-sm text-gray-700">                                              
                                 <form action="{{ route('delete.post', $post->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this post?')" class="block">
                                     @csrf
                                     @method('DELETE')
@@ -57,13 +54,10 @@
         </div>
     </div>
 
-    <!-- Post Content -->
     <div class="px-5 pb-4">
-        <p class="text-gray-800 leading-relaxed">{{ $post->content }}</p>
-        <button class="text-brand-500 font-medium text-sm mt-2 hover:underline">voir plus</button>
+        <p class="text-gray-800">{{ $post->content }}</p>
     </div>
 
-    <!-- Post Images -->
     @if($post->media->isNotEmpty())
         <div class="border-t border-b border-gray-100 space-y-4 mt-4">
             @foreach($post->media as $media)
@@ -121,16 +115,15 @@
         
     </div>
 
-    <!-- Action Buttons -->
     <div class="px-5 py-3 flex space-x-2">
 
         <div id="reaction-container-{{ $post->id }}" class="relative flex-1">
             <button type="button" class="reaction-button flex items-center justify-center w-full bg-gray-50 rounded-xl px-4 py-2.5 hover:bg-brand-50 transition">
                 <span class="mr-2">{{ $userReaction ? ($reactionEmojis[$userReaction->reaction] ?? '👍') : '👍' }}</span>
                 <span class="font-medium">{{ $userReaction ? ucfirst($userReaction->reaction) : 'Like' }}</span>
-            </button>
-            
-            <div class="reaction-container absolute top-full left-0 mt-2 bg-white border rounded-xl shadow-hover flex space-x-1 p-2 hidden z-10">
+            </button>            
+        
+            <div class="reaction-container absolute top-full left-0 mt-2 bg-white border rounded-xl shadow-hover flex space-x-1 p-2 hidden z-10 w-full min-h-[48px]">
                 @foreach ($reactionEmojis as $key => $emoji)
                     <form hx-post="{{ route('posts.react.store', $post->id) }}" 
                         hx-target="#reaction-container-{{ $post->id }}" 
@@ -143,7 +136,7 @@
                     </form>
                 @endforeach
             </div>
-        </div>
+        </div>        
 
         <button type="button" class="comment-button flex items-center justify-center flex-1 bg-gray-50 rounded-xl px-4 py-2.5 hover:bg-brand-50 transition" 
                 data-post-id="{{ $post->id }}">
@@ -164,7 +157,6 @@
         </div>
     @endif
 
-    <!-- Comments Section -->
     <div class="comment-section hidden border-t border-gray-100" id="comment-section-{{ $post->id }}">
         <div class="p-5">
             <form hx-post="/posts/{{ $post->id }}/comment" 
@@ -173,7 +165,7 @@
                 class="flex items-center mb-4">
                 @csrf
                 <img 
-                    src="{{ asset('storage/' . $authUser->profile_image ?? 'default-avatar.png') }}" 
+                    src="{{ asset('storage/' . ($authUser->profile_image ?? '../../../images/la-personne.png')) }}" 
                     class="w-8 h-8 rounded-full object-cover mr-3 border border-brand-100"
                     alt="Profile"
                 >
