@@ -36,27 +36,22 @@
                             </div>
                         @endif
                 
-                        <!-- Post Options -->
                         <div class="flex mt-4 pt-3 border-t border-gray-100">
-                            <!-- Photo Input -->
                             <label class="flex items-center justify-center space-x-2 text-gray-600 hover:bg-gray-50 rounded-xl px-4 py-2 transition flex-1 cursor-pointer">
                                 <i class="fas fa-image text-brand-500"></i>
                                 <span>Photo</span>
                                 <input type="file" name="media[]" class="hidden" accept="image/*" multiple>
                             </label>
                 
-                            <!-- Video Button -->
                             <button type="button" class="flex items-center justify-center space-x-2 text-gray-600 hover:bg-gray-50 rounded-xl px-4 py-2 transition flex-1" onclick="document.getElementById('videoInput').click()">
                                 <i class="fas fa-video text-green-500"></i>
                                 <span>Video</span>
                             </button>
-                            <!-- Hidden Video Input -->
                             <input type="file" name="media[]" id="videoInput" class="hidden" accept="video/*" multiple>
                         </div>
                     </div>
                 </form>
                 
-                <!-- Posts Feed -->
                 @foreach ($posts as $post)
                     @include('components.home.post-card', ['post' => $post])
                 @endforeach
