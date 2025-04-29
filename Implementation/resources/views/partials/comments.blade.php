@@ -1,6 +1,6 @@
 <div class="flex items-start space-x-3">
     <img 
-        src="{{ asset('storage/' . $comment->user->profile_image ?? 'default-avatar.png') }}" 
+        src="{{ asset('storage/' . ($comment->user->profile_image ?? '../../../images/la-personne.png')) }}" 
         alt="Profile"
         class="w-8 h-8 rounded-full object-cover border border-brand-100"
     >
@@ -58,7 +58,7 @@
             >
                 @csrf
                 <img 
-                    src="{{ asset('storage/' . Auth::user()->profile_image ?? 'default-avatar.png') }}" 
+                    src="{{ asset('storage/' . (Auth::user()->profile_image ?? '../../../images/la-personne.png')) }}" 
                     alt="Profile"
                     class="w-6 h-6 rounded-full object-cover border border-brand-100 mr-2"
                 >
