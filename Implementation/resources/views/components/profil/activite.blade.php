@@ -19,7 +19,7 @@
                     <div class="p-4">
                         <div class="p-5 flex items-start space-x-3">
                             <img
-                                src="{{ asset('storage/' . $post->user->profile_image ) ?? 'https://placehold.co/100x100/3b82f6/ffffff.png?text='.substr($request->follower->full_name, 0, 2) }}"
+                                src="{{ asset('storage/' . ($post->user->profile_image ?? '../../../images/la-personne.png'))}}"
                                 alt="Profile"
                                 class="rounded-full w-12 h-12 object-cover border-2 border-brand-100"
                             />
@@ -46,17 +46,18 @@
                                         </div>
                                     </div>
                                     @endif 
-                                    @if(auth()->check() && auth()->id() !== $post->user_id)
+                                    @if(auth()->check() && auth()->id() === $post->user_id)
                                         <div class="relative inline-block text-left">
-                                            <button onclick="toggleDropdown(this)" class="hover:text-brand-500 p-1 rounded-full hover:bg-gray-50 focus:outline-none">
+                                            <button onclick="toggleDropdown({{ $post->id }})" class="hover:text-brand-500 p-1 rounded-full hover:bg-gray-50 focus:outline-none">
                                                 <i class="fas fa-ellipsis-v"></i>
                                             </button>
                                         
-                                            <div class="dropdown-menu absolute right-0 mt-2 w-28 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 hidden z-50">
+                                            <div id="dropdown-{{ $post->id }}" class="dropdown-menu absolute right-0 mt-2 w-28 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 hidden z-50">
                                                 <div class="py-1 text-sm text-gray-700">
-                                                    <button type="button" onclick="openEditModal({{ $post->id }}, '{{ addslashes($post->content) }}')" class="block w-full text-left px-4 py-2 hover:bg-gray-100">
+                                                    <button class="block w-full text-left px-4 py-2 hover:bg-gray-100" onclick="openModal('editPostModal')">
                                                         Edit
-                                                    </button>                                                 
+                                                    </button>
+                                               
                                                     <form action="{{ route('delete.post', $post->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this post?')" class="block">
                                                         @csrf
                                                         @method('DELETE')
@@ -140,7 +141,7 @@
                                 <span class="font-medium">{{ $userReaction ? ucfirst($userReaction->reaction) : 'Like' }}</span>
                             </button>
                             
-                            <div class="reaction-container absolute top-full left-0 mt-2 bg-white border rounded-xl shadow-hover flex space-x-1 p-2 hidden z-10">
+                            <div class="reaction-container absolute top-full left-0 mt-2 bg-white border rounded-xl shadow-hover flex space-x-1 p-2 hidden z-10 w-full min-h-[48px]">
                                 @foreach ($reactionEmojis as $key => $emoji)
                                     <form hx-post="{{ route('posts.react.store', $post->id) }}" 
                                         hx-target="#reaction-container-{{ $post->id }}" 
@@ -284,8 +285,9 @@
     </div>
 </div>
 
-<div id="editPostModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
-    <div class="bg-white rounded-xl p-6 w-full max-w-md shadow-xl animate-fade-in">
+@foreach($posts as $post)
+<div id="editPostModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-xl p-6 w-full max-w-md shadow-xl">
         <div class="flex justify-between items-center mb-4">
             <h3 class="text-lg font-semibold text-gray-900">Modifier le Post</h3>
             <button type="button" onclick="closeModal('editPostModal')" class="text-gray-500 hover:text-gray-700">
@@ -294,14 +296,14 @@
         </div>
         
         <form 
-            id="edit-post-form" 
-            method="POST"
-            enctype="multipart/form-data"
+            action="{{ route('update.post', $post->id) }}" 
+            method="POST" 
+            enctype="multipart/form-data" 
             class="space-y-4"
         >
             @csrf
             @method('PUT')
-            
+
             <textarea 
                 name="content" 
                 id="edit-post-content"
@@ -309,17 +311,7 @@
                 class="w-full border border-gray-300 rounded-lg p-3 text-gray-700 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition" 
                 placeholder="Quoi de neuf ?"
                 required
-            ></textarea>
-
-            <div id="existing-media-container" class="grid grid-cols-2 gap-2 mb-3">
-            </div>
-            <button 
-                type="button" 
-                id="remove-media-btn" 
-                class="hidden text-sm text-red-500 hover:text-red-700"
-            >
-                <i class="fas fa-trash mr-1"></i> Supprimer les médias
-            </button>
+            >{{ old('content', $post->content) }}</textarea>
 
             <div>
                 <label for="edit_post_media" class="block text-sm font-medium text-gray-700 mb-1">Modifier les médias (facultatif)</label>
@@ -332,6 +324,9 @@
                     multiple
                 >
                 <p class="text-xs text-gray-500 mt-1">Formats acceptés : JPG, PNG, MP4 (max 50MB)</p>
+                <p class="text-xs text-red-500 mt-1">
+                    Ajouter de nouveaux fichiers remplacera tous les anciens médias.
+                </p>
             </div>
 
             <div class="flex justify-end mt-5 space-x-3">
@@ -345,14 +340,22 @@
         </form>
     </div>
 </div>
+@endforeach
+
+
 
 <script src="{{ asset('js/home.js') }}"></script>
 <script>
 
     function toggleDropdown(commentId) {
+        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            menu.classList.add('hidden');
+        });
+
         const dropdown = document.getElementById('dropdown-' + commentId);
         dropdown.classList.toggle('hidden');
     }
+
 
     function openReportModal(id, type) {
         document.getElementById('reported_id').value = id;
@@ -366,47 +369,15 @@
         document.getElementById('report-modal').classList.add('hidden');
     }
 
-    function openEditModal(postId, content, media = []) {
-    const modal = document.getElementById('editPostModal');
-    const form = document.getElementById('edit-post-form');
-    const textarea = document.getElementById('edit-post-content');
-    const mediaContainer = document.getElementById('existing-media-container');
-    const removeMediaBtn = document.getElementById('remove-media-btn');
-
-    form.action = `/update/${postId}/post`;
-    textarea.value = content;
-    mediaContainer.innerHTML = '';
-
-    if (media.length > 0) {
-        media.forEach(item => {
-            const mediaElement = item.type === 'image' 
-                ? `<img src="/storage/${item.path}" class="w-full h-24 object-cover rounded-lg border border-gray-200" alt="Media">`
-                : `<video controls class="w-full h-24 object-cover rounded-lg border border-gray-200">
-                     <source src="/storage/${item.path}" type="video/mp4">
-                   </video>`;
-            
-            mediaContainer.innerHTML += `
-                <div class="relative group">
-                    ${mediaElement}
-                    <input type="checkbox" name="keep_media[]" value="${item.id}" checked 
-                           class="absolute top-2 left-2 h-5 w-5 rounded border-gray-300 text-brand-600 focus:ring-brand-500">
-                    <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition"></div>
-                </div>
-            `;
-        });
-
-        removeMediaBtn.classList.remove('hidden');
-        removeMediaBtn.onclick = () => {
-            document.querySelectorAll('input[name="keep_media[]"]').forEach(checkbox => {
-                checkbox.checked = false;
-            });
-            removeMediaBtn.classList.add('hidden');
-        };
-    } else {
-        removeMediaBtn.classList.add('hidden');
+    function openModal(modalId) {
+        const modal = document.getElementById(modalId);
+        modal.classList.remove('hidden');
     }
 
-    modal.classList.remove('hidden');
-}
+    function closeModal(modalId) {
+        const modal = document.getElementById(modalId);
+        modal.classList.add('hidden');
+    }
+    
 </script> 
 @endif
