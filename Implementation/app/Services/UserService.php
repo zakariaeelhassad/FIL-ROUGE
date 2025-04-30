@@ -37,4 +37,10 @@ class UserService
     {
         return $this->repository->find($id);
     }
+
+    public function paginate()
+    {
+        return $this->repository->paginate(5); 
+    }
+
 }
