@@ -15,7 +15,7 @@ class ClubAdminProfileController extends Controller
         }
 
         $profile = ClubAdminProfile::where('user_id', $userId)->first();
-        $posts = $user->posts()->with('user', 'images')->latest()->get();
+        $posts = $user->posts()->with('user')->latest()->get();
 
         if (!$profile) {
             return view('errors.profile_not_found'); 
@@ -53,8 +53,9 @@ class ClubAdminProfileController extends Controller
 
         $profile->update($request->only(['description', 'ecile', 'Tactique', 'Gestion']));
 
-        return redirect()->route('profiles.show', ['userId' => $profile->user_id])
+        return redirect()->route('profil.joueur', ['userId' => $profile->user_id])
             ->with('message', 'Profile updated successfully');
+
     }
 
     public function destroy($userId)
@@ -95,4 +96,3 @@ class ClubAdminProfileController extends Controller
             ->with('message', 'Profile created successfully');
     }
 }
-g
