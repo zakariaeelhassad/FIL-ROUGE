@@ -11,11 +11,16 @@ class JoueurProfile extends Model
 
     protected $table = 'joueur_profiles';
 
-    protected $fillable = ['user_id'];
+    protected $fillable = ['user_id', 'club_id'];
 
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function club()
+    {
+        return $this->belongsTo(ClubAdminProfile::class, 'club_id');
     }
 
     public function certifications()
@@ -28,4 +33,8 @@ class JoueurProfile extends Model
         return $this->hasMany(Experience::class);
     }
 
+    public function invitations()
+    {
+        return $this->hasMany(Invitation::class, 'joueur_id');
+    }
 }
