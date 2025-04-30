@@ -16,7 +16,7 @@ class CreateTitresTable extends Migration
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->string('nom_titre');
             $table->integer('nombre')->default(1);
-            $table->text('description')->nullable();
+            $table->text('description_titre')->nullable();
             $table->string('image')->nullable();
             $table->timestamps();
         });
