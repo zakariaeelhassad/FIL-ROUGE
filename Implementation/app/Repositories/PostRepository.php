@@ -35,4 +35,9 @@ class PostRepository implements RepositoryInterface
     {
         return Post::find($id);
     }
+
+    public function paginate($perPage = 2)
+    {
+        return Post::paginate($perPage); 
+    }
 }
