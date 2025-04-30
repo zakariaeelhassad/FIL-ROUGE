@@ -7,6 +7,7 @@ use App\Models\Post;
 use App\Models\Reaction;
 use Illuminate\Http\Request;
 use App\Services\PostService;
+use Illuminate\Support\Facades\Storage;
 
 class PostsController extends Controller
 {
@@ -86,39 +87,37 @@ class PostsController extends Controller
     }
 
     public function update(Request $request, int $id)
-    {
-        $data = $request->validate([
-            'content' => ['required', 'string'],
-            'media.*' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp,mp4,mov,avi', 'max:51200'],
-            'keep_media' => ['nullable', 'array'],
-            'remove_media' => ['nullable', 'boolean'],
-        ]);
+{
+    $data = $request->validate([
+        'content' => ['required', 'string'],
+        'media.*' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp,mp4,mov,avi', 'max:51200'],
+    ]);
 
-        $post = Post::findOrFail($id);
-        
-        if ($post->user_id !== auth()->id()) {
-            return redirect()->back()->with('error', 'Action non autorisée');
-        }
+    $post = Post::findOrFail($id);
 
-        $post->content = $data['content'];
-        $post->save();
-
-        if ($request->has('remove_media')) {
-            $post->media()->delete();
-        } elseif ($request->has('keep_media')) {
-            $post->media()->whereNotIn('id', $request->keep_media ?? [])->delete();
-        }
-
-        if ($request->hasFile('media')) {
-            foreach ($request->file('media') as $file) {
-                $path = $file->store('posts', 'public');
-                $type = str_contains($file->getMimeType(), 'video') ? 'video' : 'image';
-                $post->media()->create(['path' => $path, 'type' => $type]);
-            }
-        }
-
-        return redirect()->back()->with('success', 'Post mis à jour avec succès');
+    if ($post->user_id !== auth()->id()) {
+        return redirect()->back()->with('error', 'Action non autorisée');
     }
+
+    $post->content = $data['content'];
+    $post->save();
+
+    if ($request->hasFile('media')) {
+        foreach ($post->media as $media) {
+            Storage::disk('public')->delete($media->path); 
+            $media->delete(); 
+        }
+
+        foreach ($request->file('media') as $file) {
+            $path = $file->store('posts', 'public');
+            $type = str_contains($file->getMimeType(), 'video') ? 'video' : 'image';
+            $post->media()->create(['path' => $path, 'type' => $type]);
+        }
+    }
+
+    return redirect()->route('profil.joueur')->with('success', 'Post mis à jour avec succès');
+}
+
 
     public function destroy(int $id)
     {
