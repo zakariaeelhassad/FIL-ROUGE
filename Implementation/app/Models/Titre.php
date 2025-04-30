@@ -13,7 +13,7 @@ class Titre extends Model
         'user_id',
         'nom_titre',
         'nombre',
-        'description',
+        'description_titre',
         'image',
     ];
 
@@ -24,5 +24,6 @@ class Titre extends Model
     {
         return $this->belongsTo(User::class);
     }
+
 }
 
