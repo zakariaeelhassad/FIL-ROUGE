@@ -9,18 +9,26 @@ class ClubAdminProfile extends Model
 {
     use HasFactory;
 
-    protected $table = 'club_admin_profiles';
-
     protected $fillable = [
-        'user_id', 
-        'description', 
-        'ecile', 
-        'Tactique', 
+        'user_id',
+        'description',
+        'ecile',
+        'Tactique',
         'Gestion',
     ];
 
     public function user()
     {
-        return $this->belongsTo(User::class); 
+        return $this->belongsTo(User::class);
+    }
+
+    public function joueurs()
+    {
+        return $this->hasMany(JoueurProfile::class, 'club_id');
+    }
+
+    public function invitations()
+    {
+        return $this->hasMany(Invitation::class, 'club_id');
     }
 }
