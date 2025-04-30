@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Services\TitreService;
 use Illuminate\Http\Request;
 use App\Models\Titre;
+use Illuminate\Support\Facades\Storage;
 
 class TitreController extends Controller
 {
@@ -32,7 +33,7 @@ class TitreController extends Controller
         $data = $request->validate([
             'nom_titre' => 'required|string|max:255',
             'nombre' => 'required|integer|min:1',
-            'description' => 'nullable|string',
+            'description_titre' => 'nullable|string',
             'image' => 'nullable|image|max:2048',
         ]);        
 
@@ -58,38 +59,50 @@ class TitreController extends Controller
         return view('components.profil.profil_club_admin.titre', compact('titre' , 'user'));
     }
 
-    public function edit(int $id)
-    {
-        $titre = $this->titreService->find($id);
-
-        if (!$titre) {
-            return redirect()->back()->with('error', 'Titre introuvable.');
-        }
-
-        return view('titres.edit', compact('titre'));
-    }
 
     public function update(Request $request, int $id)
     {
         $data = $request->validate([
             'nom_titre' => 'required|string|max:255',
             'nombre' => 'required|integer|min:1',
-            'description' => 'nullable|string',
+            'description_titre' => 'nullable|string',
             'image' => 'nullable|image|max:2048',
+            'remove_image' => 'nullable|boolean',
         ]);
 
+        $titre = Titre::findOrFail($id);
+
+        // Facultatif : sécurité selon l'utilisateur
+        if ($titre->user_id !== auth()->id()) {
+            return redirect()->back()->with('error', 'Action non autorisée');
+        }
+
+        // Mise à jour des champs texte
+        $titre->nom_titre = $data['nom_titre'];
+        $titre->nombre = $data['nombre'];
+        $titre->description_titre = $data['description_titre'] ?? null;
+
+        // Suppression de l'image existante si demandé
+        if ($request->has('remove_image') && $titre->image) {
+            Storage::disk('public')->delete($titre->image);
+            $titre->image = null;
+        }
+
+        // Upload d'une nouvelle image si présente
         if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('titres', 'public');
+            // Supprimer l'ancienne image si elle existe
+            if ($titre->image) {
+                Storage::disk('public')->delete($titre->image);
+            }
+
+            $titre->image = $request->file('image')->store('titres', 'public');
         }
 
-        $result = $this->titreService->update($data, $id);
+        $titre->save();
 
-        if (!$result) {
-            return redirect()->back()->with('error', 'Échec de la mise à jour.');
-        }
+        return redirect()->route('profil.joueur')->with('success', 'Titre mis à jour avec succès.');
+    }  
 
-        return redirect()->route('titres.index')->with('success', 'Titre mis à jour avec succès.');
-    }
 
     public function destroy(int $id)
     {
