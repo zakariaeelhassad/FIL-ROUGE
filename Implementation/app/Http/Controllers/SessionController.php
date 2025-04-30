@@ -25,6 +25,9 @@ class SessionController extends Controller
    
        if ($user && Hash::check($credentials['password'], $user->password)) {
            Auth::login($user);
+            if ($user->role === 'admin') {
+                return redirect()->route('dashboard.admin')->with('success', 'Welcome! Login successful.');
+            }
            return redirect('/')->with('success', 'Welcome! Login successful.');
        }
    
