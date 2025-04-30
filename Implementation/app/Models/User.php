@@ -49,6 +49,12 @@ class User extends Authenticatable
         return $this->hasMany(Post::class);
     }
 
+    public function titres()
+    {
+        return $this->hasMany(Titre::class);
+    }
+
+
     public function comments()
     {
         return $this->hasMany(Comment::class);
@@ -62,11 +68,6 @@ class User extends Authenticatable
     public function clubAdminProfile()
     {
         return $this->hasOne(ClubAdminProfile::class);
-    }
-
-    public function titres()
-    {
-        return $this->hasMany(Titre::class);
     }
 
     public function experiences()
@@ -164,17 +165,6 @@ class User extends Authenticatable
     {
         return Chat::where('user_one_id', $this->id)
             ->orWhere('user_two_id', $this->id);
-    }
-
-    public function friendsPosts()
-    {
-        $followingIds = $this->acceptedFollowing()->pluck('following_id');
-        
-        return Post::whereIn('user_id', $followingIds)
-                    ->orWhere('user_id', $this->id)
-                    ->with(['user', 'media', 'comments', 'reactions'])
-                    ->latest()
-                    ->get();
     }
     
     public function socialMedia()
