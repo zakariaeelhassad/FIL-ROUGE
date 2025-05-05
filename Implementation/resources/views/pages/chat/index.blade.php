@@ -32,6 +32,7 @@
                                     ->where('receiver_id', auth()->id())
                                     ->where('read', false)
                                     ->count();
+                                $latestMessage = $chat->messages()->latest()->first();
                             @endphp
                             <a href="{{ route('chat.show', $chat) }}" class="block p-4 border rounded-xl hover:bg-gray-50 hover-lift transition">
                                 <div class="flex justify-between items-center">
@@ -44,13 +45,13 @@
                                             />
                                         </div>
                                         <div class="ml-3">
-                                            <h3 class="font-bold text-gray-900">{{ $otherUser->name }}</h3>
-                                            @if($chat->latestMessage)
+                                            <h3 class="font-bold text-gray-900">{{ $otherUser->full_name }}</h3>
+                                            @if($latestMessage)
                                                 <p class="text-sm text-gray-600 truncate max-w-xs">
-                                                    {{ $chat->latestMessage->message }}
+                                                    {{ $latestMessage->message }}
                                                 </p>
                                                 <p class="text-xs text-gray-500">
-                                                    {{ $chat->latestMessage->created_at->diffForHumans() }}
+                                                    {{ $latestMessage->created_at->diffForHumans() }}
                                                 </p>
                                             @else
                                                 <p class="text-sm text-gray-500">No messages yet</p>
@@ -70,4 +71,4 @@
             </div>
         </div>
     </div>
-    @endsection
+@endsection

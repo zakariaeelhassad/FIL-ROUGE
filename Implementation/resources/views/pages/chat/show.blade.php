@@ -94,14 +94,12 @@
                 </div>
             </div>
             <div class="flex-grow">
-                <h2 class="font-semibold text-sm">{{ $otherUser->name }}</h2>
-                <p class="text-xs text-instagram-darkGray">Active now</p>
+                <h2 class="font-semibold text-sm">{{ $otherUser->full_name }}</h2>
             </div>
             
         </div>
 
         <div class="bg-white rounded-lg overflow-hidden">
-            <!-- Chat messages container -->
             <div id="chat-messages" class="h-96 overflow-y-auto p-4 bg-white">
                 @foreach($messages as $message)
                     <div class="mb-3 @if($message->sender_id === auth()->id()) text-right @endif">
@@ -130,18 +128,9 @@
             <form id="chat-form" class="border-t border-instagram-lightGray p-3">
                 @csrf
                 <div class="flex items-center bg-instagram-lightGray rounded-full px-4 py-2">
-                    <button type="button" class="text-instagram-darkGray mr-3">
-                        <i class="far fa-smile"></i>
-                    </button>
                     <input type="text" name="message" id="message-input" 
                         class="flex-1 bg-transparent border-none focus:ring-0 text-sm placeholder-instagram-darkGray" 
                         placeholder="Message...">
-                    <button type="button" class="text-instagram-darkGray mx-2">
-                        <i class="far fa-image"></i>
-                    </button>
-                    <button type="button" class="text-instagram-darkGray mx-2">
-                        <i class="far fa-heart"></i>
-                    </button>
                     <button type="submit" id="send-button"
                         class="text-instagram-blue font-semibold text-sm disabled:opacity-50 disabled:text-instagram-darkGray ml-2">
                         Send

@@ -53,7 +53,7 @@
                                             />
                                         </div>
                                         <div class="ml-3">
-                                            <h3 class="font-bold text-gray-900">{{ $user->name }}</h3>
+                                            <h3 class="font-bold text-gray-900">{{ $user->full_name }}</h3>
                                             <p class="text-sm text-gray-500">{{ $user->email ?? 'No email available' }}</p>
                                         </div>
                                     </div>
