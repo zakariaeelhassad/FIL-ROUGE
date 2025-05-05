@@ -241,7 +241,7 @@
             <div class="flex items-center mb-2">
                 <div class="w-10 h-10 rounded-full overflow-hidden bg-brand-100 border border-brand-200">
                     <img 
-                        src="{{ asset('storage/' . Auth::user()->profile_image ?? 'default-avatar.png') }}" 
+                        src="{{ asset('storage/' . (Auth::user()->profile_image ?? '../../../images/la-personne.png')) }}" 
                         alt="Profile" 
                         class="w-full h-full object-cover"
                     >

@@ -144,10 +144,11 @@
                     required
                 >
                     <option value="">Select category</option>
-                    <option value="sinyor">Sinyor</option>
-                    <option value="jinyor">Jinyor</option>
-                    <option value="kadiy">Kadiy</option>
-                    <option value="minim">Minim</option>
+                    <option value="Senior">Senior</option>
+                    <option value="Espoir">Espoir</option>
+                    <option value="Junior">Junior</option>
+                    <option value="Cadet">Cadet </option>
+                    <option value="Minim">Minim</option>
                 </select>
             </div>
             
