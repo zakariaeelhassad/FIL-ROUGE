@@ -5,13 +5,8 @@
     <div class="max-w-4xl mx-auto px-4 py-8">
         @include("components.profil.carte_profil_prancipal")
         
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-            <div class="md:col-span-1">
-                @include("components.profil.social_media")
-            </div>
-            <div class="md:col-span-2">
-                @include("components.profil.profil_joueur.performance_stats")
-            </div>
+        <div class="mt-6">
+            @include("components.profil.profil_joueur.performance_stats")
         </div>
         
         <div class="mt-8 bg-white rounded-2xl shadow-soft">
@@ -22,9 +17,6 @@
                     </button>
                     <button data-target="experience" class="nav-button px-6 py-4 text-gray-700 transition-colors duration-300 hover:text-brand-500 focus:outline-none whitespace-nowrap">
                         Expérience
-                    </button>
-                    <button data-target="certification" class="nav-button px-6 py-4 text-gray-700 transition-colors duration-300 hover:text-brand-500 focus:outline-none whitespace-nowrap">
-                        Certifications
                     </button>
                     <button href="{{ route('invitations.player') }}" data-target="invitation" class="nav-button px-6 py-4 text-gray-700 transition-colors duration-300 hover:text-brand-500 focus:outline-none whitespace-nowrap">
                         club
@@ -38,9 +30,6 @@
                 </div>
                 <div id="experience" class="profile-section hidden">
                     @include("components.profil.profil_joueur.experience")
-                </div>
-                <div id="certification" class="profile-section hidden">
-                    @include("components.profil.profil_joueur.certification")
                 </div>
                 <div id="invitation" class="profile-section hidden">
                     @include("components.profil.profil_joueur.invitations")
