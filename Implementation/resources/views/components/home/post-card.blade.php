@@ -17,7 +17,7 @@
                 @if(auth()->check() && auth()->id() !== $post->user_id)
                 <div class="text-gray-400 relative group">
                     <button class="hover:text-brand-500 p-1 rounded-full hover:bg-gray-50"
-                            onclick="togglePostDropdown({{ $post->id }})">
+                            onclick="toggleDropdown('dropdown-{{ $post->id }}')">
                         <i class="fas fa-ellipsis-v"></i>
                     </button>
 
@@ -33,10 +33,10 @@
                 @endif
                 @if(auth()->check() && auth()->id() === $post->user_id)
                     <div class="relative inline-block text-left">
-                        <button onclick="toggleOwnerDropdown(this)" class="hover:text-brand-500 p-1 rounded-full hover:bg-gray-50 focus:outline-none">
+                        <button onclick="toggleDropdown('owner-dropdown-{{ $post->id }}')" class="hover:text-brand-500 p-1 rounded-full hover:bg-gray-50 focus:outline-none">
                             <i class="fas fa-ellipsis-v"></i>
                        </button>    
-                        <div class="dropdown-menu absolute right-0 mt-2 w-28 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 hidden z-50">
+                        <div id="owner-dropdown-{{ $post->id }}" class="dropdown-menu absolute right-0 mt-2 w-28 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 hidden z-50">
                             <div class="py-1 text-sm text-gray-700">                                              
                                 <form action="{{ route('delete.post', $post->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this post?')" class="block">
                                     @csrf
@@ -118,12 +118,13 @@
     <div class="px-5 py-3 flex space-x-2">
 
         <div id="reaction-container-{{ $post->id }}" class="relative flex-1">
-            <button type="button" class="reaction-button flex items-center justify-center w-full bg-gray-50 rounded-xl px-4 py-2.5 hover:bg-brand-50 transition">
+            <button type="button" class="reaction-button flex items-center justify-center w-full bg-gray-50 rounded-xl px-4 py-2.5 hover:bg-brand-50 transition min-w-[120px]" 
+                   onclick="toggleReactionMenu({{ $post->id }})">
                 <span class="mr-2">{{ $userReaction ? ($reactionEmojis[$userReaction->reaction] ?? '👍') : '👍' }}</span>
                 <span class="font-medium">{{ $userReaction ? ucfirst($userReaction->reaction) : 'Like' }}</span>
             </button>            
         
-            <div class="reaction-container absolute top-full left-0 mt-2 bg-white border rounded-xl shadow-hover flex space-x-1 p-2 hidden z-10 w-full min-h-[48px]">
+            <div id="reaction-menu-{{ $post->id }}" class="reaction-container absolute top-full left-0 mt-2 bg-white border rounded-xl shadow-hover flex space-x-1 p-2 hidden z-10 w-full min-h-[48px]">
                 @foreach ($reactionEmojis as $key => $emoji)
                     <form hx-post="{{ route('posts.react.store', $post->id) }}" 
                         hx-target="#reaction-container-{{ $post->id }}" 
@@ -139,7 +140,7 @@
         </div>        
 
         <button type="button" class="comment-button flex items-center justify-center flex-1 bg-gray-50 rounded-xl px-4 py-2.5 hover:bg-brand-50 transition" 
-                data-post-id="{{ $post->id }}">
+                onclick="toggleCommentSection({{ $post->id }})">
             <span class="mr-2">💬</span>
             <span class="font-medium">Comment</span>
         </button>
@@ -192,51 +193,111 @@
 </div> 
 
 
-<div id="report-modal" class="fixed inset-0 bg-black bg-opacity-40 z-50 hidden items-center justify-center">
-    <div class="bg-white rounded-2xl w-full max-w-md p-6 shadow-xl">
-        <h2 class="text-lg font-semibold mb-4">Signaler un contenu</h2>
-        <form method="POST" action="{{ route('reports.store') }}">
-            @csrf
-            <input type="hidden" name="reported_type" id="reported_type">
-            <input type="hidden" name="reported_id" id="reported_id">
-
-            <label class="block text-sm font-medium text-gray-700 mb-1">Raison</label>
-            <textarea name="reason" rows="4" required class="w-full border border-gray-300 rounded-lg p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-brand-200"></textarea>
-
-            <div class="flex justify-end space-x-2">
-                <button type="button" onclick="closeReportModal()" class="px-4 py-2 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200">Annuler</button>
-                <button type="submit" class="px-4 py-2 text-white bg-red-500 rounded-lg hover:bg-red-600">Envoyer</button>
-            </div>
-        </form>
-    </div>
-</div>
-
 <script>
-// For other users' dropdown (report)
-function togglePostDropdown(postId) {
-    const dropdown = document.getElementById('dropdown-' + postId);
-    if (dropdown) dropdown.classList.toggle('hidden');
+// Global click handler to close dropdowns when clicking elsewhere
+document.addEventListener('click', function(event) {
+    // Close all dropdowns when clicking outside of them
+    if (!event.target.closest('.dropdown-menu') && !event.target.closest('button')) {
+        // Close all visible dropdowns
+        document.querySelectorAll('.dropdown-menu:not(.hidden)').forEach(dropdown => {
+            dropdown.classList.add('hidden');
+        });
+        
+        // Close all visible reaction menus
+        document.querySelectorAll('.reaction-container:not(.hidden)').forEach(menu => {
+            menu.classList.add('hidden');
+        });
+    }
+});
+
+// Toggle any dropdown by ID
+function toggleDropdown(dropdownId) {
+    const dropdown = document.getElementById(dropdownId);
+    if (dropdown) {
+        // First close all other dropdowns
+        document.querySelectorAll('.dropdown-menu:not(.hidden), [id^="dropdown-"]:not(.hidden)').forEach(menu => {
+            if (menu.id !== dropdownId) {
+                menu.classList.add('hidden');
+            }
+        });
+        
+        // Then toggle the target dropdown
+        dropdown.classList.toggle('hidden');
+    }
 }
 
-// For post owner dropdown (edit/delete)
-function toggleOwnerDropdown(button) {
-    const dropdown = button.nextElementSibling;
-    if (dropdown && dropdown.classList.contains('dropdown-menu')) {
-        dropdown.classList.toggle('hidden');
+// Toggle the reaction menu for a specific post
+function toggleReactionMenu(postId) {
+    const reactionMenu = document.getElementById('reaction-menu-' + postId);
+    if (reactionMenu) {
+        // Close all other reaction menus
+        document.querySelectorAll('.reaction-container:not(.hidden)').forEach(menu => {
+            if (menu.id !== 'reaction-menu-' + postId) {
+                menu.classList.add('hidden');
+            }
+        });
+        
+        // Toggle the target reaction menu
+        reactionMenu.classList.toggle('hidden');
+    }
+}
+
+// Toggle the comment section for a specific post
+function toggleCommentSection(postId) {
+    const commentSection = document.getElementById('comment-section-' + postId);
+    if (commentSection) {
+        commentSection.classList.toggle('hidden');
+        
+        // Focus the comment input box if the section is visible
+        if (!commentSection.classList.contains('hidden')) {
+            const commentInput = document.getElementById('comment-input-' + postId);
+            if (commentInput) {
+                commentInput.focus();
+            }
+        }
+    }
+}
+
+// Toggle reply form for a specific comment
+function toggleReplyForm(commentId) {
+    const replyForm = document.getElementById('reply-form-' + commentId);
+    if (replyForm) {
+        replyForm.classList.toggle('hidden');
+        
+        // Focus the reply input if the form is visible
+        if (!replyForm.classList.contains('hidden')) {
+            const replyInput = document.getElementById('reply-input-' + commentId);
+            if (replyInput) {
+                replyInput.focus();
+            }
+        }
     }
 }
 
 function openReportModal(id, type) {
     document.getElementById('reported_id').value = id;
     document.getElementById('reported_type').value = type;
-    document.getElementById('report-modal').classList.remove('hidden');
-    document.getElementById('report-modal').classList.add('flex');
+    const modal = document.getElementById('report-modal');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
 }
 
 function closeReportModal() {
-    document.getElementById('report-modal').classList.remove('flex');
-    document.getElementById('report-modal').classList.add('hidden');
+    const modal = document.getElementById('report-modal');
+    modal.classList.remove('flex');
+    modal.classList.add('hidden');
 }
+
+// Initialize reply buttons after page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Add click event to all reply buttons
+    document.querySelectorAll('.reply-button').forEach(button => {
+        button.addEventListener('click', function() {
+            const commentId = this.getAttribute('data-comment-id');
+            toggleReplyForm(commentId);
+        });
+    });
+});
 
 function openEditModal(postId, content, media = []) {
     const modal = document.getElementById('editPostModal');
