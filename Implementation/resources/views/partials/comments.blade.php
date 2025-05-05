@@ -12,16 +12,16 @@
                 @if(auth()->check() && auth()->id() !== $comment->user_id)
                 <div class="text-gray-400 relative group">
                     <button class="hover:text-brand-500 p-1 rounded-full hover:bg-gray-50"
-                            onclick="toggleDropdown({{ $comment->id }})">
+                            onclick="toggleDropdown('comment-dropdown-{{ $comment->id }}')">
                         <i class="fas fa-ellipsis-v"></i>
                     </button>
 
-                    <div id="dropdown-{{ $comment->id }}" class="absolute right-0 mt-2 w-40 bg-white border border-gray-100 rounded-xl shadow-md z-20 hidden">
+                    <div id="comment-dropdown-{{ $comment->id }}" class="absolute right-0 mt-2 w-40 bg-white border border-gray-100 rounded-xl shadow-md z-20 hidden">
                         <button
                             class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                             onclick="openReportModal({{ $comment->id }}, 'comment')"
                         >
-                            🚩 Signaler ce commenter
+                            Signaler ce commenter
                         </button>
                     </div>
                 </div>
@@ -43,7 +43,9 @@
                 Like
             </button>
             
-            <button class="reply-button text-gray-500 hover:text-brand-600 font-medium transition" data-comment-id="{{ $comment->id }}">
+            <button class="reply-button text-gray-500 hover:text-brand-600 font-medium transition" 
+                    onclick="toggleReplyForm({{ $comment->id }})" 
+                    data-comment-id="{{ $comment->id }}">
                 <i class="fas fa-reply text-gray-500 hover:text-brand-600"></i>
                 Reply
             </button>
@@ -87,7 +89,6 @@
     </div>
 </div>
 
-
 <div id="report-modal" class="fixed inset-0 bg-black bg-opacity-40 z-50 hidden items-center justify-center">
     <div class="bg-white rounded-2xl w-full max-w-md p-6 shadow-xl">
         <h2 class="text-lg font-semibold mb-4">Signaler un contenu</h2>
@@ -106,23 +107,3 @@
         </form>
     </div>
 </div>
-
-<script>
-
-    function toggleDropdown(commentId) {
-        const dropdown = document.getElementById('dropdown-' + commentId);
-        dropdown.classList.toggle('hidden');
-    }
-
-    function openReportModal(id, type) {
-        document.getElementById('reported_id').value = id;
-        document.getElementById('reported_type').value = type;
-        document.getElementById('report-modal').classList.remove('hidden');
-        document.getElementById('report-modal').classList.add('flex');
-    }
-
-    function closeReportModal() {
-        document.getElementById('report-modal').classList.remove('flex');
-        document.getElementById('report-modal').classList.add('hidden');
-    }
-</script>
