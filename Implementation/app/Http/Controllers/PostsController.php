@@ -70,7 +70,7 @@ class PostsController extends Controller
             }
         }
 
-        return redirect()->route('posts.index')->with('success', 'Post créé avec succès');
+        return redirect()->back()->with('success', 'Post créé avec succès');
     }
 
     public function show(int $id)
@@ -115,7 +115,7 @@ class PostsController extends Controller
         }
     }
 
-    return redirect()->route('profil.joueur')->with('success', 'Post mis à jour avec succès');
+    return redirect()->back()->with('success', 'Post mis à jour avec succès');
 }
 
 
@@ -123,6 +123,6 @@ class PostsController extends Controller
     {
         $result = $this->postService->delete($id);
 
-        return redirect()->route('posts.index')->with('success', 'Post supprimé avec succès');
+        return redirect()->back()->with('success', 'Post supprimé avec succès');
     }
 }

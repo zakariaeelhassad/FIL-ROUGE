@@ -32,16 +32,16 @@ class ReportController extends Controller
     {
         $reports = Report::with('reporter', 'reported')->latest()->get();
 
-        return response()->json($reports);
+        return view('reports.index', compact('reports'));
     }
+
 
     public function destroy($id)
     {
         $report = Report::findOrFail($id);
         $report->delete();
 
-        return response()->json([
-            'message' => 'Le signalement a été supprimé avec succès.'
-        ]);
+        return redirect()->back()->with('success', 'Le signalement a été supprimé avec succès.');
     }
+
 }

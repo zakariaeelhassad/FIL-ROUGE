@@ -35,7 +35,7 @@ class ExperienceController extends Controller
             'joiningDate' => ['required', 'date'],
             'exitDate' => ['nullable', 'date'],
             'place' => ['required', 'string'],
-            'categoryType' => ['required', 'in:sinyor,jinyor,kadiy,minim'],
+            'categoryType' => ['required', 'in:Senior,Espoir,Junior,Cadet ,Minim'],
         ]);
 
         $data['user_id'] = auth()->id();

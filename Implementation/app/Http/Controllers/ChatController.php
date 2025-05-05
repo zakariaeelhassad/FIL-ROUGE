@@ -19,16 +19,21 @@ class ChatController extends Controller
     }
 
     public function index()
-    {
-        $userId = Auth::id();
-        
-        $chats = Chat::where('user_one_id', $userId)
-            ->orWhere('user_two_id', $userId)
-            ->with(['userOne', 'userTwo', 'latestMessage'])
-            ->get();
-        
-        return view('pages.chat.index', compact('chats'));
-    }
+{
+    $userId = Auth::id();
+    
+    $chats = Chat::where('user_one_id', $userId)
+        ->orWhere('user_two_id', $userId)
+        ->with(['userOne', 'userTwo', 'latestMessage'])
+        ->get()
+        ->sortByDesc(function ($chat) {
+            return optional($chat->latestMessage)->created_at;
+        })
+        ->values(); 
+
+    return view('pages.chat.index', compact('chats'));
+}
+
 
     public function show(Chat $chat)
     {

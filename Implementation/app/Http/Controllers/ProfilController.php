@@ -116,24 +116,25 @@ class ProfilController extends Controller
     {
         $profile = $user->joueurProfile;
         $posts = $user->posts()->with('user')->latest()->get();
-        $experiences = $user->experiences()->with('user')->latest()->get();
+        $experiences = $user->joueurProfile->experiences()->latest()->get();
         $invitations = Invitation::where('joueur_id', $profile->id)->with(['club.user'])->get();
-        $socialMedia = $user->socialMedia ?? null;
+        $experiencesCount = $user->joueurProfile->experiences()->count();
 
-        return view('pages.profil_joueur', compact('user', 'posts', 'profile', 'experiences', 'socialMedia', 'invitations'));
+        return view('pages.profil_joueur', compact('user', 'posts', 'profile', 'experiences', 'experiencesCount', 'invitations'));
     }
 
     private function renderClubProfil(User $user)
     {
         $profile = $user->clubAdminProfile;
         $posts = $user->posts()->with('user')->latest()->get();
-        $titres = $user->titres()->where('user_id', $user->id)->latest()->get();
+        $titres = $user->clubAdminProfile->titres()->latest()->get();
         $socialMedia = $user->socialMedia ?? null;
-
+        $titresCount = $user->clubAdminProfile->titres()->count();
+        
         $data = $this->getAvailableJoueursForClub($profile->id);
         extract($data); 
 
-        return view('pages.profil_club_manager', compact('user', 'posts', 'profile', 'titres', 'socialMedia', 'availableJoueurs', 'joueurs', 'invitations', 'clubMembers'));
+        return view('pages.profil_club_manager', compact('user', 'posts', 'profile', 'titres', 'titresCount'));
     }
 
     private function getAvailableJoueursForClub($clubId)

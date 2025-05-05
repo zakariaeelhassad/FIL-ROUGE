@@ -72,25 +72,20 @@ class TitreController extends Controller
 
         $titre = Titre::findOrFail($id);
 
-        // Facultatif : sécurité selon l'utilisateur
         if ($titre->user_id !== auth()->id()) {
             return redirect()->back()->with('error', 'Action non autorisée');
         }
 
-        // Mise à jour des champs texte
         $titre->nom_titre = $data['nom_titre'];
         $titre->nombre = $data['nombre'];
         $titre->description_titre = $data['description_titre'] ?? null;
 
-        // Suppression de l'image existante si demandé
         if ($request->has('remove_image') && $titre->image) {
             Storage::disk('public')->delete($titre->image);
             $titre->image = null;
         }
 
-        // Upload d'une nouvelle image si présente
         if ($request->hasFile('image')) {
-            // Supprimer l'ancienne image si elle existe
             if ($titre->image) {
                 Storage::disk('public')->delete($titre->image);
             }
