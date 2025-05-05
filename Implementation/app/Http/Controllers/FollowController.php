@@ -12,21 +12,39 @@ class FollowController extends Controller
      * Follow a user (send a follow request)
      */
 
-    public function reseau()
-    {
-        $user = auth()->user();
-         
-        $followingIds = $user->following()->pluck('following_id')->toArray();
-        $followingIds[] = $user->id; 
-        $users = User::where('id', '!=', auth()->id())->get();
-         
-        $suggestedUsers = User::whereNotIn('id', $followingIds)
-                            ->inRandomOrder()
-                            ->limit(15)
-                            ->get();
-         
-        return view('pages.reseau', compact('users' , 'suggestedUsers'));
-    }
+     public function reseau(Request $request)
+     {
+         $user = auth()->user();
+     
+         $followingIds = $user->following()->pluck('following_id')->toArray();
+         $followingIds[] = $user->id;
+     
+         // Recherche
+         $search = $request->input('search');
+         $roleFilter = $request->input('role');
+     
+         $query = User::query()
+             ->whereNotIn('id', $followingIds)
+             ->where('role', '!=', 'admin');
+     
+         if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->whereRaw('LOWER(full_name) LIKE ?', ['%' . strtolower($search) . '%'])
+                  ->orWhereRaw('LOWER(username) LIKE ?', ['%' . strtolower($search) . '%']);
+            });
+         }
+     
+         if ($roleFilter && in_array($roleFilter, ['joueur', 'club_admin'])) {
+             $query->where('role', $roleFilter);
+         }
+     
+         $suggestedUsers = $query->inRandomOrder()->get();
+         $users = $suggestedUsers;
+     
+         return view('pages.reseau', compact('users', 'suggestedUsers'));
+     }
+     
+     
     
     public function follow($userId)
     {

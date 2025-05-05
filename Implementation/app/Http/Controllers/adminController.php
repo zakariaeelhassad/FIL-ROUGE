@@ -48,10 +48,10 @@ class adminController extends Controller
 
     private function getDashboardDat()
     {
-        $users = User::where('id', '!=', auth()->id())->latest()->take(2)->get();  // Latest 2 users
-        $posts = Post::latest()->take(2)->get();  // Latest 2 posts
-        $comments = Comment::with('post', 'user')->latest()->take(2)->get();  // Latest 2 comments
-        $reports = Report::with('reporter')->latest()->take(2)->get();  // Latest 2 reports
+        $users = User::where('id', '!=', auth()->id())->latest()->take(2)->get(); 
+        $posts = Post::latest()->take(2)->get();  
+        $comments = Comment::with('post', 'user')->latest()->take(2)->get(); 
+        $reports = Report::with('reporter')->latest()->take(2)->get();  
 
         $chats = Chat::with('messages')  
             ->orderByDesc(function ($query) {
@@ -82,6 +82,14 @@ class adminController extends Controller
 
         $query = User::query()->where('role', '!=', 'admin');
 
+        if ($request->has('search') && !empty($request->search)) {
+            $searchTerm = $request->search;
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('full_name', 'LIKE', '%' . $searchTerm . '%')
+                  ->orWhere('email', 'LIKE', '%' . $searchTerm . '%');
+            });
+        }
+
         if ($request->has('role') && in_array($request->role, ['joueur', 'club_admin'])) {
             $query->where('role', $request->role);
         }
@@ -108,6 +116,16 @@ class adminController extends Controller
         $data = $this->getDashboardData();
 
         $query = Post::with(['user', 'media', 'reactions', 'comments', 'reports']);
+
+        if ($request->has('search') && !empty($request->search)) {
+            $searchTerm = $request->search;
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('content', 'LIKE', '%' . $searchTerm . '%')
+                  ->orWhereHas('user', function($userQuery) use ($searchTerm) {
+                      $userQuery->where('full_name', 'LIKE', '%' . $searchTerm . '%');
+                  });
+            });
+        }
 
         if ($request->has('media_type')) {
             switch ($request->media_type) {
@@ -150,27 +168,46 @@ class adminController extends Controller
     public function comments(Request $request)
     {
         $data = $this->getDashboardData(); 
+        
+        $query = Comment::with(['post', 'user', 'replies.user']);
+        
+        if ($request->has('search') && !empty($request->search)) {
+            $searchTerm = $request->search;
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('content', 'LIKE', '%' . $searchTerm . '%')
+                  ->orWhereHas('user', function($userQuery) use ($searchTerm) {
+                      $userQuery->where('full_name', 'LIKE', '%' . $searchTerm . '%');
+                  })
+                  ->orWhereHas('post', function($postQuery) use ($searchTerm) {
+                      $postQuery->where('content', 'LIKE', '%' . $searchTerm . '%');
+                  });
+            });
+        }
     
-        $comments = Comment::with(['post', 'user', 'replies.user']) 
-            ->latest() 
-            ->get();
-    
-        $data['comments'] = $comments;
+        $data['comments'] = $query->latest()->get();
     
         return view('pages.dashboard.affichage_commenter', $data); 
     }
     
 
-    public function reports()
+    public function reports(Request $request)
     {
         $data = $this->getDashboardData(); 
-    
-        $reports = Report::with('reporter')
-                         ->latest() 
-                         ->get(); 
-    
-        $data['reports'] = $reports;
-    
+        
+        $query = Report::with('reporter');
+        
+        if ($request->has('search') && !empty($request->search)) {
+            $searchTerm = $request->search;
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('reason', 'LIKE', '%' . $searchTerm . '%')
+                ->orWhereHas('reporter', function($reporterQuery) use ($searchTerm) {
+                    $reporterQuery->where('full_name', 'LIKE', '%' . $searchTerm . '%');
+                });
+            });
+        }
+
+        $data['reports'] = $query->latest()->get(); 
+
         return view('pages.dashboard.affichage_reports', $data);
     }
     
