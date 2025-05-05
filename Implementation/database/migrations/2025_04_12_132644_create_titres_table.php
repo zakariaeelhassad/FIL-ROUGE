@@ -13,7 +13,7 @@ class CreateTitresTable extends Migration
     {
         Schema::create('titres', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('club_admin_profile_id')->constrained('club_admin_profiles')->onDelete('cascade');
             $table->string('nom_titre');
             $table->integer('nombre')->default(1);
             $table->text('description_titre')->nullable();

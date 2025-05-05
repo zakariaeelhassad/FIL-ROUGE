@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('experience', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('joueur_profile_id')->constrained('joueur_profiles')->onDelete('cascade');
             $table->string('nameClub');
             $table->string('image')->nullable(); 
             $table->date('joiningDate');
             $table->date('exitDate')->nullable();
             $table->string('place');
-            $table->enum('categoryType', ['sinyor', 'jinyor', 'kadiy', 'minim']);
+            $table->enum('categoryType', ['Senior', 'Espoir' , 'Junior', 'Cadet ', 'Minim']);
             $table->timestamps();
         });
     }
