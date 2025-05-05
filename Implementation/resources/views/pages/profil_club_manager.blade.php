@@ -1,46 +1,50 @@
 @extends('layouts.app', ['title' => 'profil'])
 
 @section('content')
-    
+    <style>
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+
     <div class="max-w-4xl mx-auto px-4 py-8">
         @include("components.profil.carte_profil_prancipal")
-        
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-            <div class="md:col-span-1">
-                @include("components.profil.social_media")
-            </div>
-            <div class="md:col-span-2">
-                @include("components.profil.profil_club_admin.performance_stats")
-            </div>
+
+        <div class="mt-6">
+            @include("components.profil.profil_club_admin.performance_stats")
         </div>
-        
+
         <div class="mt-8 bg-white rounded-2xl shadow-soft">
             <div class="border-b border-gray-100">
-                <nav class="flex">
-                    <button data-target="description" class="nav-button px-6 py-4 text-gray-700 transition-colors duration-300 hover:text-brand-500 focus:outline-none whitespace-nowrap">
+                <nav class="flex overflow-x-auto scrollbar-hide space-x-2 md:space-x-0 md:overflow-visible">
+                    <button data-target="description" class="nav-button px-4 py-3 text-sm md:text-base text-gray-700 transition-colors duration-300 hover:text-brand-500 focus:outline-none whitespace-nowrap">
                         Description
                     </button>
-                    <button data-target="ecole" class="nav-button px-6 py-4 text-gray-700 transition-colors duration-300 hover:text-brand-500 focus:outline-none whitespace-nowrap">
+                    <button data-target="ecole" class="nav-button px-4 py-3 text-sm md:text-base text-gray-700 transition-colors duration-300 hover:text-brand-500 focus:outline-none whitespace-nowrap">
                         Ecole
                     </button>
-                    <button data-target="tactique" class="nav-button px-6 py-4 text-gray-700 transition-colors duration-300 hover:text-brand-500 focus:outline-none whitespace-nowrap">
+                    <button data-target="tactique" class="nav-button px-4 py-3 text-sm md:text-base text-gray-700 transition-colors duration-300 hover:text-brand-500 focus:outline-none whitespace-nowrap">
                         Tactique
                     </button>
-                    <button data-target="gestion" class="nav-button px-6 py-4 text-gray-700 transition-colors duration-300 hover:text-brand-500 focus:outline-none whitespace-nowrap">
+                    <button data-target="gestion" class="nav-button px-4 py-3 text-sm md:text-base text-gray-700 transition-colors duration-300 hover:text-brand-500 focus:outline-none whitespace-nowrap">
                         Gestion
                     </button>
-                    <button data-target="activité" class="nav-button px-6 py-4 text-gray-700 transition-colors duration-300 hover:text-brand-500 focus:outline-none whitespace-nowrap">
+                    <button data-target="activité" class="nav-button px-4 py-3 text-sm md:text-base text-gray-700 transition-colors duration-300 hover:text-brand-500 focus:outline-none whitespace-nowrap">
                         Activité
                     </button>
-                    <button data-target="titres" class="nav-button px-6 py-4 text-gray-700 transition-colors duration-300 hover:text-brand-500 focus:outline-none whitespace-nowrap">
+                    <button data-target="titres" class="nav-button px-4 py-3 text-sm md:text-base text-gray-700 transition-colors duration-300 hover:text-brand-500 focus:outline-none whitespace-nowrap">
                         Titres
                     </button>
-                    <button data-target="personnes" class="nav-button px-6 py-4 text-gray-700 transition-colors duration-300 hover:text-brand-500 focus:outline-none whitespace-nowrap">
+                    <button data-target="personnes" class="nav-button px-4 py-3 text-sm md:text-base text-gray-700 transition-colors duration-300 hover:text-brand-500 focus:outline-none whitespace-nowrap">
                         Personnes
                     </button>
                 </nav>
             </div>
-            
+
             <div class="p-6">
                 <div id="description" class="profile-section">
                     @include("components.profil.profil_club_admin.description")
@@ -67,7 +71,6 @@
         </div>
     </div>
 @endsection
-
 
 @push('scripts')
     <script>
@@ -96,7 +99,7 @@
                     const targetSectionId = button.getAttribute('data-target');
                     const targetSection = document.getElementById(targetSectionId);
                     targetSection.classList.remove('hidden');
-                    
+
                     targetSection.classList.add('animate-fade-in');
                     setTimeout(() => {
                         targetSection.classList.remove('animate-fade-in');
@@ -113,5 +116,4 @@
             document.getElementById(model).classList.add('hidden');
         }
     </script>
-    @endpush
-
+@endpush
