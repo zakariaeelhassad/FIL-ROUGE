@@ -12,7 +12,7 @@ class Experience extends Model
     protected $table = 'experience';
 
     protected $fillable = [
-        'user_id',
+        'joueur_profile_id',
         'nameClub',
         'image',
         'joiningDate',

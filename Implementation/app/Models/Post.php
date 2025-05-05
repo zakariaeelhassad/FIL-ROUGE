@@ -35,7 +35,13 @@ class Post extends Model
 
     public function reports()
     {
-        return $this->morphMany(Report::class, 'reported');
+        return $this->hasMany(Report::class, 'reported_id');
     }
+
+    public function reportedReports()
+    {
+        return $this->hasMany(Report::class, 'reported_id');
+    }
+
 
 }

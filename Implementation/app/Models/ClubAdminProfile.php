@@ -31,4 +31,9 @@ class ClubAdminProfile extends Model
     {
         return $this->hasMany(Invitation::class, 'club_id');
     }
+
+    public function titres()
+    {
+        return $this->hasMany(Titre::class);
+    }
 }

@@ -10,7 +10,7 @@ class Titre extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
+        'club_admin_profile_id',
         'nom_titre',
         'nombre',
         'description_titre',

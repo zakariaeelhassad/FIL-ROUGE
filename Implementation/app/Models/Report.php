@@ -26,5 +26,11 @@ class Report extends Model
         return $this->morphTo();
     }
 
+    public function reportedPost()
+    {
+        return $this->belongsTo(Post::class, 'reported_id');
+    }
+
+
 }
 
