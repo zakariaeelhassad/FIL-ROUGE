@@ -7,7 +7,18 @@
             <h2 class="text-2xl font-bold">Suivi des Commentaires</h2>
             <p class="text-gray-400">Consultez les commentaires publiés par les utilisateurs</p>
         </div>
+        <div>
+            <form action="{{ route('comments') }}" method="GET" class="flex">
+                <input type="text" name="search" placeholder="Search comments..." 
+                       class="bg-gray-700 text-white px-4 py-2 rounded-l-lg focus:outline-none"
+                       value="{{ request('search') }}">
+                <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-r-lg">
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
+        </div>
     </div>
+    
 
     <div class="bg-gray-800 border border-gray-700 rounded-xl overflow-hidden mb-6">
         <div class="overflow-x-auto">

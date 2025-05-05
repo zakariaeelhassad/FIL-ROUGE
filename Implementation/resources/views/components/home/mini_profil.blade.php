@@ -20,13 +20,10 @@
             </div>
         </div>
         
-        <!-- Profile Name -->
         <h2 class="text-brand-600 font-bold text-xl mb-1">{{ $user->full_name ?? $user->username }}</h2>
         
-        <!-- Profile Description -->
         <p class="text-gray-500 text-sm mb-5 line-clamp-2">{{ $user->bio ?? 'Aucune bio disponible.' }}</p>
         
-        <!-- Stats -->
         <div class="flex justify-center items-center mb-5">
             <div class="flex flex-col items-center">
                 <span class="text-2xl font-bold text-gray-800">{{ $user->followers->count() }}</span>

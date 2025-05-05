@@ -7,6 +7,16 @@
         <h2 class="text-2xl font-bold">Reports & Analytics</h2>
         <p class="text-gray-400">Platform performance and user reports</p>
       </div>
+      <div>
+                <form action="{{ route('reports') }}" method="GET" class="flex">
+                    <input type="text" name="search" placeholder="Search reports..." 
+                           class="bg-gray-700 text-white px-4 py-2 rounded-l-lg focus:outline-none"
+                           value="{{ request('search') }}">
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-r-lg">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
+            </div>
       
     </div>
     

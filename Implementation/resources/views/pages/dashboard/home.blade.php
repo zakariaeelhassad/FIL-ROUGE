@@ -14,7 +14,6 @@
 
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <!-- Latest Users with more details -->
             <div class="bg-gray-800 border border-gray-700 rounded-xl overflow-hidden">
                 <div class="bg-gray-700 px-4 py-3 flex justify-between items-center">
                     <h3 class="text-lg font-bold text-white">Latest Users</h3>
@@ -69,7 +68,6 @@
                 </div>
             </div>
 
-            <!-- Latest Posts with more details -->
             <div class="bg-gray-800 border border-gray-700 rounded-xl overflow-hidden">
                 <div class="bg-gray-700 px-4 py-3 flex justify-between items-center">
                     <h3 class="text-lg font-bold text-white">Latest Posts</h3>
@@ -124,7 +122,6 @@
                 </div>
             </div>
 
-            <!-- Latest Comments with more details -->
             <div class="bg-gray-800 border border-gray-700 rounded-xl overflow-hidden">
                 <div class="bg-gray-700 px-4 py-3 flex justify-between items-center">
                     <h3 class="text-lg font-bold text-white">Latest Comments</h3>
@@ -164,7 +161,6 @@
                 </div>
             </div>
 
-            <!-- Latest Reports with more details -->
             <div class="bg-gray-800 border border-gray-700 rounded-xl overflow-hidden">
                 <div class="bg-gray-700 px-4 py-3 flex justify-between items-center">
                     <h3 class="text-lg font-bold text-white">Latest Reports</h3>

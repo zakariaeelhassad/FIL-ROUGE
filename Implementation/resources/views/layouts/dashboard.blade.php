@@ -55,12 +55,6 @@
       </div>
       
       <div class="flex items-center space-x-4">
-        <div class="relative hidden md:block">
-          <input type="text" placeholder="Search..." class="bg-gray-700 border border-gray-600 rounded-full py-1.5 pl-9 pr-4 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 w-64">
-          <i class="fas fa-search absolute left-3 top-2.5 text-gray-400"></i>
-        </div>
-        
-        
         <div id="dropdownToggle" class="flex items-center relative cursor-pointer">
             <div class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-medium">
               A

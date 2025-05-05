@@ -8,6 +8,17 @@
             <p class="text-gray-400 mt-1">Manage platform users and permissions</p>
         </div>
         <div class="flex space-x-3">
+            <div>
+                <form action="{{ route('users.admin') }}" method="GET" class="flex">
+                    <input type="text" name="search" placeholder="Search users..." 
+                           class="bg-gray-700 text-white px-4 py-2 rounded-l-lg focus:outline-none"
+                           value="{{ request('search') }}">
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-r-lg">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
+            </div>
+            
             <div class="relative">
                 <button id="filterButtonUser" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg flex items-center">
                     <i class="fas fa-filter mr-2"></i>
@@ -17,6 +28,10 @@
                     <div class="p-4">
                         <h3 class="text-white font-medium mb-3">Filter Users</h3>
                         <form action="{{ route('users.admin') }}" method="GET">
+                            @if(request('search'))
+                                <input type="hidden" name="search" value="{{ request('search') }}">
+                            @endif
+                            
                             <div class="mb-3">
                                 <label class="block text-gray-400 text-sm mb-2">Role</label>
                                 <div class="space-y-2">
@@ -138,5 +153,3 @@
     });
   </script>
   @endsection
-
-  

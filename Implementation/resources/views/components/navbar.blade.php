@@ -1,19 +1,14 @@
 <nav class="bg-gray-900 text-white shadow-md sticky top-0 z-50">
     <div class="container mx-auto px-4 py-3">
         <div class="flex justify-between items-center">
-            {{-- Logo & Search --}}
             <div class="flex items-center space-x-4">
-                <a href="/" class="text-3xl font-bold bg-brand-600 rounded-lg p-1 shadow-lg hover:bg-brand-700 transition">
-                    <span class="px-2">GI.</span>
+                <a href="/" class="flex items-center gap-2 text-3xl font-bold bg-brand-600 rounded-lg p-1 shadow-lg hover:bg-brand-700 transition">
+                    <img src="{{ asset('images/G_1.png') }}" alt="Logo" class="w-10 h-10 rounded" />
                 </a>
-                <div class="relative hidden md:block">
-                    <input 
-                        type="text" 
-                        placeholder="Search..." 
-                        class="bg-gray-800 text-white rounded-full pl-10 pr-4 py-2 w-64 focus:outline-none focus:ring-2 focus:ring-brand-400 transition"
-                    >
-                    <i class="fas fa-search text-gray-400 absolute left-3 top-2.5"></i>
-                </div>
+                <a href="/reseau" class="flex flex-col items-center {{ request()->is('reseau') ? 'text-brand-300 border-b-2 border-brand-500 pb-1' : 'text-gray-400 hover:text-brand-300 transition' }}">
+                    <i class="fas fa-search h-6 w-6"></i>
+                    <span class="text-xs mt-1">Search</span>
+                </a>                
             </div>
 
             <div class="md:hidden">
@@ -37,7 +32,6 @@
                 </a>
             </div>
 
-            {{-- User Dropdown --}}
             <div class="flex items-center space-x-4">
                 @auth
                 <div class="relative inline-block text-left">
@@ -84,7 +78,6 @@
         </div>
     </div>
 
-    {{-- Mobile Menu --}}
     <div id="mobileMenu" class="md:hidden hidden px-4 pb-4 space-y-2 bg-gray-800">
         <div class="relative mb-3">
             <input 
@@ -102,7 +95,6 @@
     <div class="h-1 bg-brand-500"></div>
 </nav>
 
-{{-- JS for dropdown + mobile menu --}}
 @auth
 <script>
     document.addEventListener("DOMContentLoaded", function () {
