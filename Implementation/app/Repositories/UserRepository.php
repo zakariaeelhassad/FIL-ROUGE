@@ -36,9 +36,4 @@ class UserRepository implements RepositoryInterface
         return User::find($id);
     }
 
-    public function paginate($perPage = 5)
-    {
-        return User::paginate($perPage); 
-    }
-
 }
