@@ -14,7 +14,13 @@ class TitreService
 
     public function create(array $data)
     {
-        $data['user_id'] = auth()->id();
+        $clubAdminProfile = \App\Models\ClubAdminProfile::where('user_id', auth()->id())->first();
+
+        if (!$clubAdminProfile) {
+            throw new \Exception('Aucun profil club admin trouvé pour cet utilisateur.');
+        }
+
+        $data['club_admin_profile_id'] = $clubAdminProfile->id;
         return $this->repository->create($data);
     }
 

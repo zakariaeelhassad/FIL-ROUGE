@@ -38,9 +38,4 @@ class PostService
     {
         return $this->repository->find($id);
     }
-
-    public function paginate()
-    {
-        return $this->repository->paginate(2); 
-    }
 }

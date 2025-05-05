@@ -14,7 +14,13 @@ class ExperienceService
 
     public function create(array $data)
     {
-        $data['user_id'] = auth()->id(); 
+        $joueurProfile = \App\Models\JoueurProfile::where('user_id', auth()->id())->first();
+
+        if (!$joueurProfile) {
+            throw new \Exception('Aucun profil club admin trouvé pour cet utilisateur.');
+        }
+
+        $data['joueur_profile_id'] = $joueurProfile->id;
         return $this->repository->create($data);
     }
 
