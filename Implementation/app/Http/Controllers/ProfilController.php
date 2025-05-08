@@ -12,6 +12,7 @@ use App\Models\Post;
 use App\Models\Report;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class ProfilController extends Controller
 {
@@ -107,8 +108,6 @@ class ProfilController extends Controller
         $totalChats = Message::count();
         $totalReports = Report::count();
         
-
-
         return view('pages.dashboard', compact('users' , 'posts' , 'chats' , 'reports' , 'totalChats' , 'totalReports'));
     }
 
@@ -132,15 +131,18 @@ class ProfilController extends Controller
         $titresCount = $user->clubAdminProfile->titres()->count();
         
         $data = $this->getAvailableJoueursForClub($profile->id);
-        extract($data); 
-
-        return view('pages.profil_club_manager', compact('user', 'posts', 'profile', 'titres', 'titresCount'));
+        
+        return view('pages.profil_club_manager', array_merge(
+            compact('user', 'posts', 'profile', 'titres', 'titresCount', 'socialMedia'),
+            $data
+        ));
     }
 
     private function getAvailableJoueursForClub($clubId)
     {
         $invitations = Invitation::where('club_id', $clubId)->with('joueur.user')->get();
         $clubMembers = JoueurProfile::where('club_id', $clubId)->with('user')->get();
+        
         $joueurs = User::where('role', 'joueur')->with('joueurProfile')->get();
 
         $clubJoueurIds = $clubMembers->pluck('id')->toArray();

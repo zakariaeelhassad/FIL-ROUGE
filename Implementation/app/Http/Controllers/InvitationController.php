@@ -14,7 +14,8 @@ class InvitationController extends Controller
 {
     public function index()
     {
-        $clubProfile = auth()->user()->clubAdminProfile;
+        $user = auth()->user();
+        $clubProfile = $user->clubAdminProfile;
 
         if (!$clubProfile) {
             return redirect()->back()->with('error', 'Vous n\'avez pas de profil de club.');
@@ -28,27 +29,45 @@ class InvitationController extends Controller
             ->with('user')
             ->get();
 
-        $joueurs = User::where('role', 'joueur')
+        $allJoueurs = User::where('role', 'joueur')
             ->with('joueurProfile')
             ->get();
 
-        $clubJoueurIds = JoueurProfile::where('club_id', $clubProfile->id)
-            ->pluck('id')
-            ->toArray();
+        $joueurs = $allJoueurs->filter(function($user) {
+            return $user->joueurProfile !== null;
+        });
 
-        $invitedJoueurIds = Invitation::where('club_id', $clubProfile->id)
-            ->pluck('joueur_id')
-            ->toArray();
+        $clubJoueurIds = $clubMembers->pluck('id')->toArray();
+        
+        $invitedJoueurIds = $invitations->pluck('joueur_id')->toArray();
 
+        // Filtrer les joueurs disponibles (ni membres du club, ni déjà invités)
         $availableJoueurs = $joueurs->filter(function($joueur) use ($invitedJoueurIds, $clubJoueurIds) {
             if (!$joueur->joueurProfile) {
                 return false;
             }
+            
             return !in_array($joueur->joueurProfile->id, $invitedJoueurIds) &&
                    !in_array($joueur->joueurProfile->id, $clubJoueurIds);
         });
 
-        return view('components.profil.profil_club_admin.personne', compact('invitations', 'clubMembers', 'availableJoueurs'));
+        // Pour déboguer, décommentez les lignes suivantes
+        /*
+        Log::debug('Debug data', [
+            'club_id' => $clubProfile->id,
+            'total_joueurs' => $joueurs->count(),
+            'available_joueurs' => $availableJoueurs->count(),
+            'club_members' => $clubMembers->count(),
+            'invitations' => $invitations->count()
+        ]);
+        */
+
+        return view('pages.profil_club_manager', compact(
+            'user',
+            'invitations', 
+            'clubMembers', 
+            'availableJoueurs'
+        ));
     }
 
     public function store(Request $request)
