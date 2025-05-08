@@ -191,6 +191,25 @@
     </div>
 </div> 
 
+<div id="report-modal" class="fixed inset-0 bg-black bg-opacity-40 z-50 hidden items-center justify-center">
+    <div class="bg-white rounded-2xl w-full max-w-md p-6 shadow-xl">
+        <h2 class="text-lg font-semibold mb-4">Signaler un contenu</h2>
+        <form method="POST" action="{{ route('reports.store') }}">
+            @csrf
+            <input type="hidden" name="reported_type" id="reported_type">
+            <input type="hidden" name="reported_id" id="reported_id">
+
+            <label class="block text-sm font-medium text-gray-700 mb-1">Raison</label>
+            <textarea name="reason" rows="4" required class="w-full border border-gray-300 rounded-lg p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-brand-200"></textarea>
+
+            <div class="flex justify-end space-x-2">
+                <button type="button" onclick="closeReportModal()" class="px-4 py-2 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200">Annuler</button>
+                <button type="submit" class="px-4 py-2 text-white bg-red-500 rounded-lg hover:bg-red-600">Envoyer</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 
 <script>
 function togglePostDropdown(postId) {

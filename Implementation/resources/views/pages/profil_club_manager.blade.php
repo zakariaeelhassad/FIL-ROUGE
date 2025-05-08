@@ -65,7 +65,12 @@
                     @include("components.profil.profil_club_admin.titre")
                 </div>
                 <div id="personnes" class="profile-section hidden">
-                    @include("components.profil.profil_club_admin.personne")
+                    @include('components.profil.profil_club_admin.personne', [
+                            'user' => $user,
+                            'invitations' => $invitations ?? collect(),
+                            'clubMembers' => $clubMembers ?? collect(),
+                            'availableJoueurs' => $availableJoueurs ?? collect()
+                        ])
                 </div>
             </div>
         </div>
