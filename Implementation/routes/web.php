@@ -119,10 +119,11 @@ Route::post('/logout', [SessionController::class, 'logout'])
 
 
 Route::middleware(['auth'])->group(function () {
-    Route::post('/invitations', [InvitationController::class, 'store'])->name('invitations.store');
+
+    Route::get('/club/players', [InvitationController::class, 'index'])->name('club.players');
     
+    Route::post('/invitations', [InvitationController::class, 'store'])->name('invitations.store');
     Route::get('/invitations/player', [InvitationController::class, 'playerInvitations'])->name('invitations.player');
     Route::post('/invitations/{id}/accept', [InvitationController::class, 'acceptInvitation'])->name('invitations.accept');
     Route::post('/invitations/{id}/reject', [InvitationController::class, 'rejectInvitation'])->name('invitations.reject');
-    
 });
