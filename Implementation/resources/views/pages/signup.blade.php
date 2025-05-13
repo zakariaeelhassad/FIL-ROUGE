@@ -151,7 +151,7 @@
 
               <div class="flex items-center justify-between pt-4 border-t border-gray-300">
                 <span class="text-sm text-gray-600">Déjà un compte?</span>
-                <a href="" class="text-sm font-medium text-blue-600 hover:text-blue-900">Se connecter</a>
+                <a href="{{ route('login')}}" class="text-sm font-medium text-blue-600 hover:text-blue-900">Se connecter</a>
             </div>
 
             </div>

@@ -59,10 +59,6 @@
                                 Club Profile
                             </a>
                             @endif
-                            <a href="/settings" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-brand-600">
-                                <i class="fas fa-cog h-5 w-5 mr-2 text-gray-500"></i>
-                                Settings
-                            </a>
                             <div class="border-t border-gray-100 mt-2 pt-2">
                                 <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">@csrf</form>
                                 <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50">

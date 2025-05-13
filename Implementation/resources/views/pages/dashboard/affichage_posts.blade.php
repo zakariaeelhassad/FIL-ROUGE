@@ -141,7 +141,7 @@
                 {{ $post->comments->count() }}
               </div>
               <div class="flex items-center">
-                <i class="fas fa-comment text-blue-400 mr-1"></i>
+                <i class="fas fa-exclamation-triangle"></i>
                 {{ $post->reports_count }}
               </div>
             </div>

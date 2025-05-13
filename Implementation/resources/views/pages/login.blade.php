@@ -75,15 +75,6 @@
                         </div>
                     </div>
 
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center">
-                            <input id="remember" name="remember" type="checkbox" class="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded">
-                            <label for="remember" class="ml-2 block text-sm text-gray-700">
-                                Se souvenir de moi
-                            </label>
-                        </div>
-                        <a href="#" class="text-sm text-blue-600 hover:text-blue-900">Mot de passe oublié?</a>
-                    </div>
 
                     <div>
                         <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline transition duration-150 ease-in-out">
@@ -98,20 +89,6 @@
                 </div>
             </form>
 
-            <div class="bg-gray-100 py-4 text-center">
-                <p class="text-sm text-gray-600">Rejoignez notre communauté de <span class="font-bold">100,000+</span> fans de football</p>
-                <div class="flex justify-center space-x-4 mt-2">
-                    <a href="#" class="text-gray-600 hover:text-green-600">
-                        <i class="fab fa-facebook fa-lg"></i>
-                    </a>
-                    <a href="#" class="text-gray-600 hover:text-green-600">
-                        <i class="fab fa-twitter fa-lg"></i>
-                    </a>
-                    <a href="#" class="text-gray-600 hover:text-green-600">
-                        <i class="fab fa-instagram fa-lg"></i>
-                    </a>
-                </div>
-            </div>
         </div>
     </div>
 

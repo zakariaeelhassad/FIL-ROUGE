@@ -6,11 +6,13 @@
                 <div class="h-24 bg-gradient-to-r from-brand-700 to-brand-900 relative">
                     <div class="absolute left-1/2 transform -translate-x-1/2 -bottom-8">
                         <div class="w-16 h-16 rounded-full bg-white p-1 shadow-md">
-                            <img 
-                                src="{{ asset('storage/' . ($invitation->club->user->profile_image ?? '../../../images/la-personne.png')) }}" 
-                                alt="Profile photo" 
-                                class="w-full h-full object-cover" 
-                            />
+                            <a href="{{ route('profil.show', ['id' => $invitation->club->user->id]) }}">
+                                <img 
+                                    src="{{ asset('storage/' . ($invitation->club->user->profile_image ?? '../../../images/la-personne.png')) }}" 
+                                    alt="Profile photo" 
+                                    class="w-full h-full object-cover" 
+                                />
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -57,11 +59,17 @@
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center space-x-3">
                                     <div class="h-12 w-12 rounded-full bg-brand-100 flex items-center justify-center text-brand-600 font-bold text-lg">
-                                        {{ substr($invitation->club->user->name ?? 'C', 0, 1) }}
+                                        <a href="{{ route('profil.show', ['id' => $invitation->club->user->id]) }}">
+                                            <img 
+                                                src="{{ asset('storage/' . ($invitation->club->user->profile_image ?? '../../../images/la-personne.png')) }}" 
+                                                alt="Profile photo" 
+                                                class="w-full h-full object-cover" 
+                                            />
+                                        </a>
                                     </div>
                                     <div>
                                         <h4 class="font-medium text-gray-900">
-                                            {{ $invitation->club->user->name ?? 'Club inconnu' }}
+                                            {{ $invitation->club->user->full_name ?? 'Club inconnu' }}
                                         </h4>
                                         <p class="text-sm text-gray-500">
                                             Invitation reçue le {{ $invitation->created_at->format('d/m/Y') }}

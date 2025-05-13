@@ -112,11 +112,13 @@
                             <div class="absolute left-1/2 transform -translate-x-1/2 -bottom-8">
                                 <div class="w-16 h-16 rounded-full bg-white p-1 shadow-md">
                                     <div class="w-full h-full rounded-full overflow-hidden bg-gray-100">
-                                        <img 
-                                            src="{{ asset('storage/' . ($user->profile_image ?? '../../../images/la-personne.png')) }}" 
-                                            alt="Profile photo" 
-                                            class="w-full h-full object-cover" 
-                                        />
+                                        <a href="{{ route('profil.show', ['id' => $user->id]) }}">
+                                            <img 
+                                                src="{{ asset('storage/' . ($user->profile_image ?? '../../../images/la-personne.png')) }}" 
+                                                alt="Profile photo" 
+                                                class="w-full h-full object-cover" 
+                                            />
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -141,10 +143,8 @@
     </div>
 </div>
 
-<!-- Modal d'invitation des joueurs -->
 <div id="invitePlayersModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
     <div class="bg-white rounded-lg shadow-xl w-full max-w-3xl mx-4 sm:mx-6 md:mx-auto max-h-[90vh] overflow-y-auto relative">
-        <!-- Header -->
         <div class="px-4 py-5 border-b border-gray-200 flex justify-between items-center">
             <h3 class="text-lg font-medium text-gray-900">Inviter des Joueurs</h3>
             <button type="button" onclick="closeModal('invitePlayersModal')" class="text-gray-400 hover:text-gray-500">
@@ -152,9 +152,7 @@
             </button>
         </div>
 
-        <!-- Contenu du modal -->
         <div class="px-4 py-5">
-            <!-- Recherche -->
             <div class="mb-4 relative">
                 <input type="text" id="playerSearch" class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-brand-500 focus:border-brand-500" placeholder="Rechercher un joueur...">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -162,7 +160,6 @@
                 </div>
             </div>
 
-            <!-- Liste des joueurs -->
             <div class="max-h-80 overflow-y-auto">
                 <table class="min-w-full divide-y divide-gray-200 text-sm">
                     <thead class="bg-gray-50 sticky top-0">
@@ -180,7 +177,13 @@
                                     <td class="px-4 py-3 whitespace-nowrap">
                                         <div class="flex items-center gap-3">
                                             <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
-                                                {{ substr($joueur->full_name ?? $joueur->name ?? 'J', 0, 1) }}
+                                                <a href="{{ route('profil.show', ['id' => $joueur->id]) }}">
+                                                    <img 
+                                                        src="{{ asset('storage/' . ($joueur->profile_image ?? '../../../images/la-personne.png')) }}" 
+                                                        alt="Profile photo" 
+                                                        class="w-full h-full object-cover" 
+                                                    />
+                                                </a>
                                             </div>
                                             <div class="text-gray-900 font-medium player-name">{{ $joueur->full_name ?? $joueur->name }}</div>
                                         </div>
